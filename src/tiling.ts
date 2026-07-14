@@ -5,17 +5,8 @@ type line = Hyper.vec3;
 type point = Hyper.vec3;
 type groupword = Weyl.groupword;
 
-function intersect(a: line, b: line): point {
-    let v = Hyper.cross(a, b);
-    if (v.t < 0) {
-        v.t = -v.t; v.x = -v.x; v.y = -v.y;
-    }
-    let n = Math.sqrt(Hyper.dot(v, v));
-    v.t /= n; v.x /= n, v.y /= n;
-    return v;
-}
 function triangleSize(a: line, b: line, c: line): number {
-    let A = intersect(b, c), B = intersect(a, c), C = intersect(a, b);
+    let A = Hyper.intersect(b, c), B = Hyper.intersect(a, c), C = Hyper.intersect(a, b);
     return Math.min(A.t, B.t, C.t);
 }
 

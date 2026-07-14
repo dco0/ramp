@@ -9,6 +9,29 @@ export function reflect(p: vec3, l: vec3): vec3 {
     const s = 2*dot(p,l)/dot(l,l);
     return {x: p.x-s*l.x, y: p.y-s*l.y, t: p.t-s*l.t};
 }
+export function intersect(a: vec3, b: vec3): vec3 {
+    let v = cross(a, b);
+    if (v.t < 0) {
+        v.t = -v.t; v.x = -v.x; v.y = -v.y;
+    }
+    let n = Math.sqrt(dot(v, v));
+    v.t /= n; v.x /= n, v.y /= n;
+    return v;
+}
+export function bary(A: vec3, B: vec3, C: vec3, a: number, b: number, c: number): vec3 {
+    let v = {
+        x: A.x*a+B.x*b+C.x*c,
+        y: A.y*a+B.y*b+C.y*c,
+        t: A.t*a+B.t*b+C.t*c
+    };
+    if (v.t < 0) {
+        v.t = -v.t; v.x = -v.x; v.y = -v.y;
+    }
+    let n = Math.sqrt(dot(v, v));
+    v.t /= n; v.x /= n, v.y /= n;
+    return v;
+}
+
 export class PoincareDiskRenderer {
     readonly canvas: HTMLCanvasElement;
     readonly ctx: CanvasRenderingContext2D;

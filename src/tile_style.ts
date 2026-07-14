@@ -17,32 +17,9 @@ export const style = {
     width: 0.5
 }
 
-function intersect(a: line, b: line): point {
-    let v = Hyper.cross(a, b);
-    if (v.t < 0) {
-        v.t = -v.t; v.x = -v.x; v.y = -v.y;
-    }
-    let n = Math.sqrt(Hyper.dot(v, v));
-    v.t /= n; v.x /= n, v.y /= n;
-    return v;
-}
-function bary(A: point, B: point, C: point, a: number, b: number, c: number): point {
-    let v = {
-        x: A.x*a+B.x*b+C.x*c,
-        y: A.y*a+B.y*b+C.y*c,
-        t: A.t*a+B.t*b+C.t*c
-    };
-    if (v.t < 0) {
-        v.t = -v.t; v.x = -v.x; v.y = -v.y;
-    }
-    let n = Math.sqrt(Hyper.dot(v, v));
-    v.t /= n; v.x /= n, v.y /= n;
-    return v;
-}
-
 export const TriangleRenderer: {[show: string]: (a: line, b: line, c: line, word: groupword, G: Weyl.CoxeterGroup) => void} = {
     outline: function(a: line, b: line, c: line): void {
-        let A = intersect(b, c), B = intersect(a, c), C = intersect(a, b);
+        let A = Hyper.intersect(b, c), B = Hyper.intersect(a, c), C = Hyper.intersect(a, b);
         ctx.beginPath();
         disk.moveTo(A);
         disk.segment(c, A, B);
@@ -53,7 +30,7 @@ export const TriangleRenderer: {[show: string]: (a: line, b: line, c: line, word
         ctx.stroke();
     },
     alternate: function(a: line, b: line, c: line, word: groupword): void {
-        let A = intersect(b, c), B = intersect(a, c), C = intersect(a, b);
+        let A = Hyper.intersect(b, c), B = Hyper.intersect(a, c), C = Hyper.intersect(a, b);
         ctx.beginPath();
         disk.moveTo(A);
         disk.segment(c, A, B);
@@ -68,9 +45,9 @@ export const TriangleRenderer: {[show: string]: (a: line, b: line, c: line, word
         }
     },
     poly2: function(a: line, b: line, c: line): void {
-        let A = intersect(b, c), B = intersect(a, c), C = intersect(a, b);
+        let A = Hyper.intersect(b, c), B = Hyper.intersect(a, c), C = Hyper.intersect(a, b);
         let alt = Hyper.cross(B, b);
-        let D = intersect(alt, b);
+        let D = Hyper.intersect(alt, b);
         ctx.beginPath();
         disk.moveTo(B);
         disk.segment(alt, B, D);
@@ -105,10 +82,10 @@ export const TriangleRenderer: {[show: string]: (a: line, b: line, c: line, word
     },
     poly3: function(a: line, b: line, c: line, _: groupword, G: Weyl.CoxeterGroup): void {
         let m = G.coxetermatrix;
-        let A = intersect(b, c), B = intersect(a, c), C = intersect(a, b);
-        let O = bary(A, B, C, Math.sin(Math.PI/m[1][2]), Math.sin(Math.PI/m[0][2]), Math.sin(Math.PI/m[0][1]));
+        let A = Hyper.intersect(b, c), B = Hyper.intersect(a, c), C = Hyper.intersect(a, b);
+        let O = Hyper.bary(A, B, C, Math.sin(Math.PI/m[1][2]), Math.sin(Math.PI/m[0][2]), Math.sin(Math.PI/m[0][1]));
         let la = Hyper.cross(a, O), lb = Hyper.cross(b, O), lc = Hyper.cross(c, O);
-        let D = intersect(la, a), E = intersect(lb, b), F = intersect(lc, c);
+        let D = Hyper.intersect(la, a), E = Hyper.intersect(lb, b), F = Hyper.intersect(lc, c);
         ctx.beginPath();
         disk.moveTo(O);
         disk.segment(la, O, D);
@@ -156,7 +133,7 @@ export const TriangleRenderer: {[show: string]: (a: line, b: line, c: line, word
         }
     },
     polya: function(a: line, b: line, c: line, word: groupword): void {
-        let A = intersect(b, c), B = intersect(a, c), C = intersect(a, b);
+        let A = Hyper.intersect(b, c), B = Hyper.intersect(a, c), C = Hyper.intersect(a, b);
         ctx.beginPath();
         disk.moveTo(A);
         disk.segment(c, A, B);
@@ -178,7 +155,7 @@ export const TriangleRenderer: {[show: string]: (a: line, b: line, c: line, word
         }
     },
     polyb: function(a: line, b: line, c: line, word: groupword): void {
-        let A = intersect(b, c), B = intersect(a, c), C = intersect(a, b);
+        let A = Hyper.intersect(b, c), B = Hyper.intersect(a, c), C = Hyper.intersect(a, b);
         ctx.beginPath();
         disk.moveTo(A);
         disk.segment(c, A, B);
