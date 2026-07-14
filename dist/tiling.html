@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Hyperbolic tiling</title>
+        <meta charset="utf-8" />
+    </head>
+    <body>
+        <div style="display: flex;">
+            <canvas id="c" width="600" height="600"></canvas>
+            <div>
+                <div>
+                    <p><input type="number" value="4" id="n" /></p>
+                    <p><input type="number" value="6" id="m" /></p>
+                    <p><select id="t">
+                        <option value="outline">Outline</option>
+                        <option value="alternate">Alternate</option>
+                        <option value="polya">PolyA</option>
+                        <option value="polyb">PolyB</option>
+                        <option value="poly2">Poly2</option>
+                        <option value="poly3">Poly3</option>
+                    </select></p>
+                    <p><button id="r">Render</button> <button id="s">Save image</button></p>
+                </div>
+                <div>
+                        <input type="color" id="f1" value="#ffffff" />
+                        <input type="color" id="f2" value="#ff0000" />
+                        <input type="color" id="f3" value="#0000ff" />
+                        <div style="height: 0.4em"></div>
+                        <input type="checkbox" id="s1c" />
+                        <input type="color" id="s1" value="#000000" />
+                        <input type="checkbox" id="s2c" checked />
+                        <input type="color" id="s2" value="#000000" />
+                        <div style="height: 0.4em"></div>
+                        <input type="range" id="w" min="0" max="5" step="0.5" value="0.5" />
+                </div>
+            </div>
+        </div>
+        <script type="module" src="./tiling.js"></script>
+    </body>
+</html>

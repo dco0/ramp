@@ -1,0 +1,76 @@
+export type vec3 = {x: number, y: number, t: number};
+export function dot(u: vec3, v: vec3): number {
+    return u.t*v.t-u.x*v.x-u.y*v.y;
+}
+export function cross(u: vec3, v: vec3): vec3 {
+    return {x: u.y*v.t-u.t*v.y, y: u.t*v.x-u.x*v.t, t: u.y*v.x-u.x*v.y};
+}
+export function reflect(p: vec3, l: vec3): vec3 {
+    const s = 2*dot(p,l)/dot(l,l);
+    return {x: p.x-s*l.x, y: p.y-s*l.y, t: p.t-s*l.t};
+}
+export class PoincareDiskRenderer {
+    readonly canvas: HTMLCanvasElement;
+    readonly ctx: CanvasRenderingContext2D;
+    private s: number;
+    private cx: number;
+    private cy: number;
+    constructor(canvas: HTMLCanvasElement) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+        const padding = 5;
+        this.s = canvas.width/2-padding;
+        this.cx = canvas.width/2;
+        this.cy = canvas.height/2;
+        this.drawDisk();
+    }
+    clear(): void {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.drawDisk();
+    }
+    drawDisk(): void {
+        this.ctx.beginPath();
+        this.ctx.ellipse(this.cx, this.cy, this.s, this.s, 0, 0, 2*Math.PI);
+        this.ctx.stroke();
+    }
+    drawLine(l: vec3): void {
+        const u = Math.sqrt(-dot(l,l));
+        const r = u/Math.abs(l.t);
+        this.ctx.beginPath();
+        if (r < 100) {
+            const p = Math.atan2(-l.y*l.t,-l.x*l.t);
+            const q = Math.atan(1/r);
+            this.ctx.arc(this.cx+this.s*l.x/l.t, this.cy+this.s*l.y/l.t, this.s*r, p-q, p+q);
+        }
+        else {
+            const v = Math.hypot(l.x,l.y);
+            this.ctx.moveTo(this.cx+this.s*-l.y/v, this.cy+this.s*l.x/v);
+            this.ctx.lineTo(this.cx+this.s*l.y/v, this.cy+this.s*-l.x/v);
+        }
+        this.ctx.stroke();
+    }
+    drawSegment(l: vec3, a: vec3, b: vec3): void {
+        this.ctx.beginPath();
+        this.segment(l, a, b);
+        this.ctx.stroke();
+    }
+    segment(l: vec3, a: vec3, b: vec3): void {
+        const u = Math.sqrt(-dot(l,l));
+        const r = u/Math.abs(l.t);
+        if (r < 100) {
+            let p = Math.atan2(a.y/(1+a.t)-l.y/l.t,a.x/(1+a.t)-l.x/l.t);
+            let q = Math.atan2(b.y/(1+b.t)-l.y/l.t,b.x/(1+b.t)-l.x/l.t);
+            if (q > p + Math.PI) { q -= 2*Math.PI; }
+            if (p > q + Math.PI) { p -= 2*Math.PI; }
+            let ccw = p > q;
+            this.ctx.arc(this.cx+this.s*l.x/l.t, this.cy+this.s*l.y/l.t, this.s*r, p, q, ccw);
+        }
+        else {
+            this.ctx.lineTo(this.cx+this.s*a.x/(1+a.t), this.cy+this.s*a.y/(1+a.t));
+            this.ctx.lineTo(this.cx+this.s*b.x/(1+b.t), this.cy+this.s*b.y/(1+b.t));
+        }
+    }
+    moveTo(a: vec3): void {
+        this.ctx.moveTo(this.cx+this.s*a.x/(1+a.t), this.cy+this.s*a.y/(1+a.t));
+    }
+}
