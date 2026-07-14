@@ -54,13 +54,10 @@ export class PoincareDiskRenderer {
     }
     clear(): void {
         this.ctx.clearRect(0, 0, this._width, this._height);
-        this.drawDisk();
     }
     drawDisk(): void {
         this.ctx.beginPath();
         this.ctx.ellipse(this.cx, this.cy, this.s, this.s, 0, 0, 2*Math.PI);
-        this.ctx.lineWidth = 6;
-        this.ctx.strokeStyle = "black";
         this.ctx.stroke();
     }
     drawLine(l: vec3): void {
