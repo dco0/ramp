@@ -42,6 +42,8 @@ function redraw(n: number, m: number, l: number, show: string) {
 
     clear();
 
+    let tilecount = 1;
+    let starttime = performance.now();
     type triangle = [[line, line, line], groupword];
     let orig: triangle = [[l1, l2, l3], ""];
     drawTriangle(...orig[0], orig[1], show, G);
@@ -60,8 +62,12 @@ function redraw(n: number, m: number, l: number, show: string) {
             if (triangleSize(...newtrg[0]) > sizelimit) continue;
             drawTriangle(...newtrg[0], newtrg[1], show, G);
             to_explore.push(newtrg);
+            tilecount++;
         }
     }
+
+    let endtime = performance.now();
+    console.log("rendered " + tilecount + " tiles in " + (endtime - starttime).toFixed(3) + "ms");
 }
 
 const inputs = {
