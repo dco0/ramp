@@ -3,12 +3,14 @@
     "type": "module",
     "scripts": {
         "build": "tsc && npx webpack",
-        "dev": "tsc"
+        "dev": "tsc",
+        "doc": "npx markdown-to-html --source README.md --output dist/index.html"
     },
     "devDependencies": {
         "@types/node": "^26.1.1",
         "typescript": "^7.0.2",
         "webpack": "^5.108.4",
-        "webpack-cli": "^7.2.1"
+        "webpack-cli": "^7.2.1",
+        "markdown-to-html-cli": "^5.0.4"
     }
 }

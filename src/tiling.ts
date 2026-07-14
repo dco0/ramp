@@ -35,6 +35,7 @@ function redraw(n: number, m: number, l: number, show: string) {
     }
     if (n % 2 && show == "polya") {
         alert("PolyA requires n even");
+        return;
     }
 
     const sizelimit = 150;
