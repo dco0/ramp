@@ -1,6 +1,6 @@
 import * as Hyper from "./hyper.js";
 import * as Weyl from "./weyl.js";
-import { TriangleRenderer, clear, style } from "./tile_style.js";
+import { ctx, clear } from "./tile_style.js";
 type line = Hyper.vec3;
 type point = Hyper.vec3;
 type groupword = Weyl.groupword;
@@ -9,22 +9,11 @@ function triangleSize(a: line, b: line, c: line): number {
     let A = Hyper.intersect(b, c), B = Hyper.intersect(a, c), C = Hyper.intersect(a, b);
     return Math.min(A.t, B.t, C.t);
 }
-function drawTriangle(a: line, b: line, c: line, word: groupword, show: string, G: Weyl.CoxeterGroup): void {
-    TriangleRenderer[show](a, b, c, word, G);
-}
 
-function redraw(n: number, m: number, l: number, show: string) {
+function redraw(n: number, m: number, l: number) {
     // 1/n + 1/m + 1/l < 1
     if (n*m+n*l+m*l>=n*m*l) {
         alert("no hyperbolic tiling with these parameters");
-        return;
-    }
-    if (m % 2 && show == "polyb") {
-        alert("PolyB requires m even");
-        return;
-    }
-    if (n % 2 && show == "polya") {
-        alert("PolyA requires n even");
         return;
     }
 
@@ -39,6 +28,8 @@ function redraw(n: number, m: number, l: number, show: string) {
     })();
     if (isNaN(l3.t)) return;
     const G = new Weyl.CoxeterGroup([[1,m,l],[m,1,n],[l,n,1]]);
+    ctx.coloring = ["dih_a_b", G];
+    ctx.style = "plain";
 
     clear();
 
@@ -46,7 +37,7 @@ function redraw(n: number, m: number, l: number, show: string) {
     let starttime = performance.now();
     type triangle = [[line, line, line], groupword];
     let orig: triangle = [[l1, l2, l3], ""];
-    drawTriangle(...orig[0], orig[1], show, G);
+    ctx.draw(orig);
 
     let to_explore: triangle[] = [orig];
     while (to_explore.length) {
@@ -60,7 +51,7 @@ function redraw(n: number, m: number, l: number, show: string) {
                     newtrg[0][i] = Hyper.reflect(newtrg[0][i], newtrg[0][f]);
             }
             if (triangleSize(...newtrg[0]) > sizelimit) continue;
-            drawTriangle(...newtrg[0], newtrg[1], show, G);
+            ctx.draw(newtrg);
             to_explore.push(newtrg);
             tilecount++;
         }
@@ -89,16 +80,8 @@ document.getElementById("r")?.addEventListener("click", (e) => {
     let n = parseInt(inputs.n.value);
     let m = parseInt(inputs.m.value);
     let l = 2;
-    let show = inputs.t.value;
 
-    style.fill1 = inputs.f1.value;
-    style.fill2 = inputs.f2.value;
-    style.fill3 = inputs.f3.value;
-    style.stroke1 = inputs.s1c.checked ? inputs.s1.value : "";
-    style.stroke2 = inputs.s2c.checked ? inputs.s2.value : "";
-    style.width = parseFloat(inputs.w.value);
-
-    redraw(n,m,l,show);
+    redraw(n,m,l);
 });
 
 document.getElementById("s")?.addEventListener("click", (e) => {
@@ -128,4 +111,4 @@ function saveImg(canvas: HTMLCanvasElement, filename: string): void {
     }, "image/png");
 }
 
-redraw(4,6,2,"outline");
+redraw(4,6,2);

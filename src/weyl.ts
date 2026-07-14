@@ -1,6 +1,6 @@
 type rewriterule = [string, string];
-type rewriterules = rewriterule[];
-function rewrite(s: string, rules: rewriterules): string {
+export type rewriterules = rewriterule[];
+export function rewrite(s: string, rules: rewriterules): string {
     let changed = true;
     while (changed) {
         changed = false;
