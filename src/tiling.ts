@@ -9,7 +9,6 @@ function triangleSize(a: line, b: line, c: line): number {
     let A = Hyper.intersect(b, c), B = Hyper.intersect(a, c), C = Hyper.intersect(a, b);
     return Math.min(A.t, B.t, C.t);
 }
-
 function drawTriangle(a: line, b: line, c: line, word: groupword, show: string, G: Weyl.CoxeterGroup): void {
     TriangleRenderer[show](a, b, c, word, G);
 }

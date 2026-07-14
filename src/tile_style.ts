@@ -5,8 +5,10 @@ type point = Hyper.vec3;
 type groupword = Weyl.groupword;
 
 const canvas = document.getElementById("c") as HTMLCanvasElement;
-const disk = new Hyper.PoincareDiskRenderer(canvas);
-const ctx = disk.ctx;
+const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+const disk = new Hyper.PoincareDiskRenderer(ctx);
+disk.width = canvas.width;
+disk.height = canvas.height;
 
 export const style = {
     fill1: "white",
@@ -14,7 +16,7 @@ export const style = {
     fill3: "blue",
     stroke1: "black",
     stroke2: "",
-    width: 0.5
+    width: 0.33
 }
 
 export const TriangleRenderer: {[show: string]: (a: line, b: line, c: line, word: groupword, G: Weyl.CoxeterGroup) => void} = {

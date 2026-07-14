@@ -33,22 +33,27 @@ export function bary(A: vec3, B: vec3, C: vec3, a: number, b: number, c: number)
 }
 
 export class PoincareDiskRenderer {
-    readonly canvas: HTMLCanvasElement;
     readonly ctx: CanvasRenderingContext2D;
-    private s: number;
-    private cx: number;
-    private cy: number;
-    constructor(canvas: HTMLCanvasElement) {
-        this.canvas = canvas;
-        this.ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
-        const padding = 5;
-        this.s = canvas.width/2-padding;
-        this.cx = canvas.width/2;
-        this.cy = canvas.height/2;
-        this.drawDisk();
+    private _width: number = 0;
+    private _height: number = 0;
+    private s: number = 0;
+    private cx: number = 0;
+    private cy: number = 0;
+    constructor(ctx: CanvasRenderingContext2D) {
+        this.ctx = ctx;
+    }
+    set width(width: number) {
+        this._width = width;
+        this.s = Math.min(this._width,this._height)/2-5;
+        this.cx = width/2;
+    }
+    set height(height: number) {
+        this._height = height;
+        this.s = Math.min(this._width,this._height)/2-5;
+        this.cy = height/2;
     }
     clear(): void {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.clearRect(0, 0, this._width, this._height);
         this.drawDisk();
     }
     drawDisk(): void {
