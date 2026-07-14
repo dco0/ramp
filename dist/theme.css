@@ -1,0 +1,13 @@
+body {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+a {
+    color: #07d;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+input, select, option, button {
+    font-family: inherit;
+}

@@ -4,13 +4,13 @@
     "scripts": {
         "build": "tsc && npx webpack",
         "dev": "tsc",
-        "doc": "npx markdown-to-html --title 'RAMP' --no-dark-mode --markdown-style-theme dark --source README.md --output dist/index.html"
+        "doc": "node doc/mkdoc.js"
     },
     "devDependencies": {
         "@types/node": "^26.1.1",
         "typescript": "^7.0.2",
         "webpack": "^5.108.4",
         "webpack-cli": "^7.2.1",
-        "markdown-to-html-cli": "^5.0.4"
+        "marked": "^18.0.6"
     }
 }
