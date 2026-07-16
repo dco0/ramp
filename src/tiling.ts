@@ -28,10 +28,6 @@ function redraw(n: number, m: number, l: number) {
     })();
     if (isNaN(l3.t)) return;
     const G = new Weyl.CoxeterGroup([[1,m,l],[m,1,n],[l,n,1]]);
-    ctx.coloring = ["dih_a_b", G];
-    ctx.style = "plain";
-
-    clear();
 
     let tilecount = 1;
     let starttime = performance.now();
@@ -64,15 +60,64 @@ function redraw(n: number, m: number, l: number) {
 const inputs = {
     n: document.getElementById("n") as HTMLInputElement,
     m: document.getElementById("m") as HTMLInputElement,
-    t: document.getElementById("t") as HTMLInputElement,
-    f1: document.getElementById("f1") as HTMLInputElement,
-    f2: document.getElementById("f2") as HTMLInputElement,
-    f3: document.getElementById("f3") as HTMLInputElement,
-    s1c: document.getElementById("s1c") as HTMLInputElement,
-    s1: document.getElementById("s1") as HTMLInputElement,
-    s2c: document.getElementById("s2c") as HTMLInputElement,
-    s2: document.getElementById("s2") as HTMLInputElement,
-    w: document.getElementById("w") as HTMLInputElement
+    
+    f: document.getElementById("f") as HTMLSelectElement,
+    p: document.getElementById("p") as HTMLSelectElement,
+    
+    w: document.getElementById("w") as HTMLInputElement,
+    sc: document.getElementById("sc") as HTMLInputElement,
+    bg: document.getElementById("bg") as HTMLInputElement
+}
+
+function updateStyles() {
+    let n = parseInt(inputs.n.value);
+    let m = parseInt(inputs.m.value);
+    let l = 2; 
+    let p = inputs.p.value;
+
+    let allowed: [string, string][] = [];
+    allowed.push(["Outline", "none"]);
+    if (p == "poly2" || p == "poly3")
+        allowed.push(["Fill", "plain"]);
+    if (p == "plain"
+        || m % 2 == 0 && p == "polyb"
+        || n % 2 == 0 && p == "polya")
+        allowed.push(["Alternate", "abel_abc"])
+    
+    while (inputs.f.firstChild)
+        inputs.f.removeChild(inputs.f.lastChild as ChildNode);
+    for (let [name, coloring] of allowed) {
+        let e = document.createElement("option");
+        e.setAttribute("value", coloring);
+        e.innerText = name;
+        inputs.f.appendChild(e);
+    }
+}
+
+inputs.n.addEventListener("input", updateStyles);
+inputs.m.addEventListener("input", updateStyles);
+inputs.p.addEventListener("input", updateStyles);
+
+function doRender() {
+    let n = parseInt(inputs.n.value);
+    let m = parseInt(inputs.m.value);
+    let l = 2;
+
+    const G = new Weyl.CoxeterGroup([[1,m,l],[m,1,n],[l,n,1]]);
+    if (inputs.f.value == "none") {
+        console.log("hi");
+        ctx.coloring = ["none", G];
+        ctx.lines = [parseFloat(inputs.w.value), inputs.sc.value];
+        ctx.disk(inputs.bg.value, inputs.sc.value, 6);
+    }
+    else {
+        ctx.coloring = [inputs.f.value, G];
+        ctx.lines = false;
+        ctx.disk(inputs.sc.value);
+    }
+    ctx.style = inputs.p.value;
+
+    redraw(n,m,l);
 }
 
 document.getElementById("r")?.addEventListener("click", (e) => {
@@ -80,6 +125,21 @@ document.getElementById("r")?.addEventListener("click", (e) => {
     let n = parseInt(inputs.n.value);
     let m = parseInt(inputs.m.value);
     let l = 2;
+
+    clear();
+
+    const G = new Weyl.CoxeterGroup([[1,m,l],[m,1,n],[l,n,1]]);
+    if (inputs.f.value == "none") {
+        ctx.coloring = ["none", G];
+        ctx.lines = [parseFloat(inputs.w.value), inputs.sc.value];
+        ctx.disk(inputs.bg.value, inputs.sc.value, 6);
+    }
+    else {
+        ctx.coloring = [inputs.f.value, G];
+        ctx.lines = false;
+        ctx.disk(inputs.bg.value);
+    }
+    ctx.style = inputs.p.value;
 
     redraw(n,m,l);
 });
@@ -111,4 +171,5 @@ function saveImg(canvas: HTMLCanvasElement, filename: string): void {
     }, "image/png");
 }
 
-redraw(4,6,2);
+updateStyles();
+document.getElementById("r")?.click();

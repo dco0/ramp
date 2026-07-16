@@ -14,15 +14,90 @@
                 width: calc(100vw - 14em);
                 max-width: calc(100vh - 2em);
             }
+            button {
+                text-align: center;
+            }
+            div > p > * {
+                width: 6em;
+                box-sizing: border-box;
+            }
+            button.accordion:not(.open)::before {
+                content: "\25b8";
+            }
+            button.accordion.open::before {
+                content: "\25be";
+            }
+            button.accordion::before {
+                color: #333;
+            }
+            button.accordion {
+                display: block;
+                padding-left: 0em;
+                background: none;
+                border: none;
+                font: inherit;
+            }
+            button.accordion:not(.open) + div {
+                display: none;
+            }
         </style>
     </head>
     <body>
         <div style="display: flex;">
             <canvas id="c" width="1000" height="1000"></canvas>
             <div id="options" style="min-width: 12em;">
-                
+                <div>
+                    <p><span>n:&nbsp;</span> <input type="number" value="4" id="n" /></p>
+                    <p><span>m:&nbsp;</span> <input type="number" value="6" id="m" /></p>
+                </div>
+                <hr />
+                <div><p>
+                    <select id="p">
+                        <option value="plain">Triangle</option>
+                        <option value="polya">PolyA</option>
+                        <option value="polyb">PolyB</option>
+                        <option value="poly2">Poly2</option>
+                        <option value="poly3">Poly3</option>
+                    </select>
+                    <select id="f">
+                        <option value="outline">Outline</option>
+                        <option value="alternate">Alternate</option>
+                    </select>
+                    
+                </p></div>
+                <hr />
+                <div>
+                    <button class="accordion">Fill</button>
+                    <div>
+                        asdf
+                    </div>
+                    <button class="accordion">Lines</button>
+                    <div>
+                        <p><input id="w" type="range" min="0" max="5" step="0.33" value="0.33" style="width: 100%;" /></p>
+                        <p><input id="sc" type="color" value="#000" style="width: 100%;" /></p>
+                    </div>
+                    <button class="accordion">Back</button>
+                    <div>
+                        <p><input id="bg" type="color" value="#fff" style="width: 100%;" /></p>
+                    </div>
+                </div>
+                <hr />
+                <div>
+                    <p>
+                        <button id="r">Render</button>
+                        <button id="s">Save</button>
+                    </p>
+                </div>
             </div>
         </div>
         <script type="module" src="./tiling.js"></script>
+        <script>
+            for (let x of document.getElementsByClassName("accordion")) {
+                x.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    x.classList.toggle("open");
+                });
+            }
+        </script>
     </body>
 </html>
