@@ -14,7 +14,7 @@ export function rewrite(s: string, rules: rewriterules): string {
     }
     return s;
 }
-function get_overlaps(s: rewriterule, t: rewriterule): rewriterules {
+function getOverlaps(s: rewriterule, t: rewriterule): rewriterules {
     let pairs: rewriterules = []
     let pos = s[0].indexOf(t[0]);
     if (pos != -1) {
@@ -26,7 +26,7 @@ function get_overlaps(s: rewriterule, t: rewriterule): rewriterules {
     }
     return pairs;
 }
-function reduce_rules(rules: rewriterules): void {
+function reduceRules(rules: rewriterules): void {
     for (let i = 0; i < rules.length; i++) {
         var red = false;
         for (let j = 0; j < rules.length; j++) {
@@ -44,7 +44,7 @@ function reduce_rules(rules: rewriterules): void {
         }
     }
 }
-function knuthbendix(eqns: rewriterules): rewriterules {
+function knuthBendix(eqns: rewriterules): rewriterules {
     let tasks: rewriterules = [];
     let rules: rewriterules = [];
     for (let x of eqns) tasks.push(x);
@@ -58,20 +58,20 @@ function knuthbendix(eqns: rewriterules): rewriterules {
             let t = u; u = v; v = t;
         }
         for (let rule of rules) {
-            for (let cp of get_overlaps([u,v], rule))
+            for (let cp of getOverlaps([u,v], rule))
                 tasks.push(cp);
-            for (let cp of get_overlaps(rule, [u,v]))
+            for (let cp of getOverlaps(rule, [u,v]))
                 tasks.push(cp);
         }
         rules.push([u,v]);
     }
 
-    reduce_rules(rules);
+    reduceRules(rules);
     return rules;
 }
 
 export type matrix = number[][];
-function coxeter_pres(mat: matrix): rewriterules {
+function coxeterPresentation(mat: matrix): rewriterules {
     let rules: rewriterules = [];
     for (let i = 0; i < mat.length; i++) {
         let x = String.fromCharCode(97+i);
@@ -82,12 +82,12 @@ function coxeter_pres(mat: matrix): rewriterules {
                 rules.push([(x+y).repeat(mat[i][j]),""]);
         }
     }
-    return knuthbendix(rules);
+    return knuthBendix(rules);
 }
 
 export type groupword = string;
 export class CoxeterGroup {
-    readonly coxetermatrix: matrix;
+    readonly coxeterMatrix: matrix;
     readonly rules: rewriterules;
     private forbid: string[];
     constructor(coxetermat: matrix) {
@@ -107,12 +107,12 @@ export class CoxeterGroup {
                 }
             }
         }
-        this.coxetermatrix = coxetermat;
-        this.rules = coxeter_pres(coxetermat);
+        this.coxeterMatrix = coxetermat;
+        this.rules = coxeterPresentation(coxetermat);
         this.forbid = this.rules.map((v) => v[0]);
     }
     get rank(): number {
-        return this.coxetermatrix.length;
+        return this.coxeterMatrix.length;
     }
     get generators(): string {
         let out = "";

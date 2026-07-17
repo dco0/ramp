@@ -4,18 +4,11 @@ type line = Hyper.vec3;
 type point = Hyper.vec3;
 type groupword = Weyl.groupword;
 
-const canvas = document.getElementById("c") as HTMLCanvasElement;
+const canvas = document.getElementById("disk") as HTMLCanvasElement;
 const _ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 const disk = new Hyper.PoincareDiskRenderer(_ctx);
 disk.width = canvas.width;
 disk.height = canvas.height;
-
-// rules:
-// any tiling setup
-// for plain triangles:
-//   -- outline, any of the coloring scheme collection
-// for complex designs:
-//   -- outline, set colors
 
 type ColoringScheme = [number, (word: groupword) => number];
 class TriangleRenderingContext {
@@ -48,7 +41,7 @@ class TriangleRenderingContext {
             this.ctx.stroke();
         }
     }
-    registercoloring(pattern: RegExp, rule: (scheme: string, G: Weyl.CoxeterGroup) => ColoringScheme) {
+    registerColoring(pattern: RegExp, rule: (scheme: string, G: Weyl.CoxeterGroup) => ColoringScheme) {
         this.colorings.push([pattern, rule]);
     }
     set coloring([scheme, G]: [string, Weyl.CoxeterGroup]) {
@@ -75,7 +68,7 @@ class TriangleRenderingContext {
     set colors(colors: string[]) {
         this.fillpalette = colors;
     }
-    registerstyle(name: string, draw: (a: line, b: line, c: line, s: number) => void) {
+    registerStyle(name: string, draw: (a: line, b: line, c: line, s: number) => void) {
         this.styles[name] = draw;
     }
     draw(trg: [[line, line, line], groupword]) {
@@ -96,12 +89,12 @@ class TriangleRenderingContext {
 }
 export const ctx = new TriangleRenderingContext(_ctx);
 
-ctx.registercoloring(/abel_a?b?c?/, (scheme, G) => {
+ctx.registerColoring(/abel_a?b?c?/, (scheme, G) => {
     let t = scheme.slice(5);
     return [2, (word) => [...word].reduce((n,c) => (n+(t.includes(c)?1:0)),0)%2];
 });
-ctx.registercoloring(/dih_[abc]_[abc](_\d+)?/, (scheme, G) => {
-    let mat = G.coxetermatrix;
+ctx.registerColoring(/dih_[abc]_[abc](_\d+)?/, (scheme, G) => {
+    let mat = G.coxeterMatrix;
     let u = scheme[4];
     let v = scheme[6];
     let n = parseInt(scheme.slice(8)) || (u=="a"?mat[1][2]:u=="b"?mat[0][2]:mat[0][1]);
@@ -113,17 +106,17 @@ ctx.registercoloring(/dih_[abc]_[abc](_\d+)?/, (scheme, G) => {
         return (n+(a+b*word.length)/2%n)%n;
     }];
 });
-ctx.registercoloring(/none/, (scheme, G) => {
+ctx.registerColoring(/none/, (scheme, G) => {
     return [0, () => -1];
 });
-ctx.registercoloring(/plain/, (scheme, G) => {
+ctx.registerColoring(/plain/, (scheme, G) => {
     return [1, () => 0];
 });
-ctx.registercoloring(/const\d+/, (scheme, G) => {
+ctx.registerColoring(/const\d+/, (scheme, G) => {
     let n = parseInt(scheme.slice(5));
     return [n, () => 0];
 })
-ctx.registerstyle("plain", (a, b, c, s) => {
+ctx.registerStyle("plain", (a, b, c, s) => {
     let A = Hyper.intersect(b, c), B = Hyper.intersect(a, c), C = Hyper.intersect(a, b);
     ctx.begin();
     disk.moveTo(A);
@@ -133,7 +126,7 @@ ctx.registerstyle("plain", (a, b, c, s) => {
     ctx.fill(s);
     ctx.stroke();
 });
-ctx.registerstyle("polya", (a, b, c, s) => {
+ctx.registerStyle("polya", (a, b, c, s) => {
     let A = Hyper.intersect(b, c), B = Hyper.intersect(a, c), C = Hyper.intersect(a, b);
     ctx.begin();
     disk.moveTo(A);
@@ -143,7 +136,7 @@ ctx.registerstyle("polya", (a, b, c, s) => {
     disk.segment(b, C, A);
     ctx.fill(s);
 });
-ctx.registerstyle("polyb", (a, b, c, s) => {
+ctx.registerStyle("polyb", (a, b, c, s) => {
     let A = Hyper.intersect(b, c), B = Hyper.intersect(a, c), C = Hyper.intersect(a, b);
     ctx.begin();
     disk.moveTo(B);
@@ -153,7 +146,7 @@ ctx.registerstyle("polyb", (a, b, c, s) => {
     disk.segment(c, A, B);
     ctx.fill(s);
 });
-ctx.registerstyle("poly2", (a, b, c, s) => {
+ctx.registerStyle("poly2", (a, b, c, s) => {
     let A = Hyper.intersect(b, c), B = Hyper.intersect(a, c), C = Hyper.intersect(a, b);
     let alt = Hyper.cross(B, b);
     let D = Hyper.intersect(alt, b);
@@ -176,8 +169,8 @@ ctx.registerstyle("poly2", (a, b, c, s) => {
     disk.segment(alt, B, D);
     ctx.stroke();
 });
-ctx.registerstyle("poly3", (a, b, c, s) => {
-    let m = (ctx.G as Weyl.CoxeterGroup).coxetermatrix;
+ctx.registerStyle("poly3", (a, b, c, s) => {
+    let m = (ctx.G as Weyl.CoxeterGroup).coxeterMatrix;
     let A = Hyper.intersect(b, c), B = Hyper.intersect(a, c), C = Hyper.intersect(a, b);
     let O = Hyper.bary(A, B, C, Math.sin(Math.PI/m[1][2]), Math.sin(Math.PI/m[0][2]), Math.sin(Math.PI/m[0][1]));
     let la = Hyper.cross(a, O), lb = Hyper.cross(b, O), lc = Hyper.cross(c, O);

@@ -61,12 +61,12 @@ const inputs = {
     n: document.getElementById("n") as HTMLInputElement,
     m: document.getElementById("m") as HTMLInputElement,
     
-    f: document.getElementById("f") as HTMLSelectElement,
-    p: document.getElementById("p") as HTMLSelectElement,
+    coloring: document.getElementById("coloring") as HTMLSelectElement,
+    pattern: document.getElementById("pattern") as HTMLSelectElement,
     
-    w: document.getElementById("w") as HTMLInputElement,
-    sc: document.getElementById("sc") as HTMLInputElement,
-    bg: document.getElementById("bg") as HTMLInputElement
+    width: document.getElementById("width") as HTMLInputElement,
+    stroke: document.getElementById("stroke") as HTMLInputElement,
+    background: document.getElementById("background") as HTMLInputElement
 }
 
 class SwatchManager {
@@ -130,7 +130,7 @@ function updateStyles() {
     let n = parseInt(inputs.n.value);
     let m = parseInt(inputs.m.value);
     let l = 2; 
-    let p = inputs.p.value;
+    let p = inputs.pattern.value;
 
     let allowed: [string, string][] = [];
     allowed.push(["Outline", "none"]);
@@ -153,33 +153,33 @@ function updateStyles() {
             if (m % i == 0)
                 allowed.push(["D"+i, "dih_c_b_"+i]);
     
-    while (inputs.f.firstChild)
-        inputs.f.removeChild(inputs.f.lastChild as ChildNode);
+    while (inputs.coloring.firstChild)
+        inputs.coloring.removeChild(inputs.coloring.lastChild as ChildNode);
     for (let [name, coloring] of allowed) {
         let e = document.createElement("option");
         e.setAttribute("value", coloring);
         e.innerText = name;
-        inputs.f.appendChild(e);
+        inputs.coloring.appendChild(e);
     }
 }
 
 inputs.n.addEventListener("input", updateStyles);
 inputs.m.addEventListener("input", updateStyles);
-inputs.p.addEventListener("input", updateStyles);
+inputs.pattern.addEventListener("input", updateStyles);
 
-document.getElementById("r")?.addEventListener("click", (e) => {
+document.getElementById("renderBtn")?.addEventListener("click", (e) => {
     e.preventDefault();
     let n = parseInt(inputs.n.value);
     let m = parseInt(inputs.m.value);
     let l = 2;
 
     const G = new Weyl.CoxeterGroup([[1,m,l],[m,1,n],[l,n,1]]);
-    if (inputs.f.value == "none") {
+    if (inputs.coloring.value == "none") {
         ctx.coloring = ["none", G];
-        ctx.lines = [parseFloat(inputs.w.value), inputs.sc.value];
+        ctx.lines = [parseFloat(inputs.width.value), inputs.stroke.value];
     }
     else {
-        ctx.coloring = [inputs.f.value, G];
+        ctx.coloring = [inputs.coloring.value, G];
         ctx.lines = false;
     }
 
@@ -193,14 +193,14 @@ document.getElementById("r")?.addEventListener("click", (e) => {
     }
 
     clear();
-    ctx.disk(inputs.bg.value, inputs.f.value == "none" ? inputs.sc.value : undefined);
-    ctx.style = inputs.p.value;
+    ctx.disk(inputs.background.value, inputs.coloring.value == "none" ? inputs.stroke.value : undefined);
+    ctx.style = inputs.pattern.value;
     redraw(n,m,l);
 });
 
-document.getElementById("s")?.addEventListener("click", (e) => {
+document.getElementById("saveBtn")?.addEventListener("click", (e) => {
     e.preventDefault();
-    saveImg(document.getElementById("c") as HTMLCanvasElement, "tiling.png");
+    saveImg(document.getElementById("disk") as HTMLCanvasElement, "tiling.png");
 });
 
 function saveImg(canvas: HTMLCanvasElement, filename: string): void {
@@ -227,4 +227,4 @@ function saveImg(canvas: HTMLCanvasElement, filename: string): void {
 
 ["red", "white"].forEach(swatches.create.bind(swatches));
 updateStyles();
-document.getElementById("r")?.click();
+document.getElementById("renderBtn")?.click();
