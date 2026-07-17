@@ -1,5 +1,25 @@
+/**
+ * a library for some geometric group theory computations
+ * contents:
+ *  - Knuth-Bendix completion algorithm
+ *  - `AutoGroup`: general representation of a nice group
+ *  - `CoxeterGroup`: specialization of `AutoGroup` for Coxeter groups
+ */
+
+/**
+ * represents a rewriting rule a -> b
+ */
 type rewriterule = [string, string];
+/**
+ * represents a collection of rewriting rules
+ */
 export type rewriterules = rewriterule[];
+/**
+ * reduces a string through a set of rewriting rules, assuming strong normalization
+ * @param s string to reduce
+ * @param rules rewriting rules
+ * @return reduced form of `s`
+ */
 export function rewrite(s: string, rules: rewriterules): string {
     let changed = true;
     while (changed) {
@@ -44,6 +64,12 @@ function reduceRules(rules: rewriterules): void {
         }
     }
 }
+/**
+ * given an initial set of rewriting rules, attempt to complete it into a confluent system
+ * WARNING: on a random input, this may not terminate (otherwise the word problem would be decidable)
+ * @param eqns initial rewriting rules
+ * @returns Knuth-Bendix completion of `eqns`
+ */
 function knuthBendix(eqns: rewriterules): rewriterules {
     let tasks: rewriterules = [];
     let rules: rewriterules = [];
@@ -70,26 +96,91 @@ function knuthBendix(eqns: rewriterules): rewriterules {
     return rules;
 }
 
+/**
+ * represents a matrix
+ */
 export type matrix = number[][];
-function coxeterPresentation(mat: matrix): rewriterules {
+/**
+ * converts a Coxeter matrix into a group presentation
+ * @param mat Coxeter matrix
+ * @returns the generators and a presentation for the Coxeter group
+ */
+function coxeterPresentation(mat: matrix): [string, rewriterules] {
     let rules: rewriterules = [];
+    let gens: string = "";
     for (let i = 0; i < mat.length; i++) {
         let x = String.fromCharCode(97+i);
         rules.push([x+x,""]);
+        gens += x;
         for (let j = 0; j < i; j++) {
             let y = String.fromCharCode(97+j);
             if (mat[i][j] != Infinity)
                 rules.push([(x+y).repeat(mat[i][j]),""]);
         }
     }
-    return knuthBendix(rules);
+    return [gens, rules];
 }
 
+/**
+ * represents group elements in terms of generators
+ */
 export type groupword = string;
-export class CoxeterGroup {
-    readonly coxeterMatrix: matrix;
+/**
+ * represents an automatic group; roughly a group that can be described in terms of a presentation with strongly normalizing rewrites
+ */
+export class AutoGroup {
+    /**
+     * the rewriting system of the group
+     */
     readonly rules: rewriterules;
-    private forbid: string[];
+    /**
+     * the subwords that are forbidden in a reduced form
+     */
+    protected readonly forbid: string[];
+    /**
+     * the generators of the group
+     */
+    readonly generators: string;
+    /**
+     * @param generators generators of the group
+     * @param presentation a presentation; not necessarily strong normalizing
+     */
+    constructor(generators: string, presentation: rewriterules) {
+        this.generators = generators;
+        this.rules = knuthBendix(presentation);
+        this.forbid = this.rules.map((v) => v[0]);
+    }
+    /**
+     * given a word in terms of generators, reduce it to simplest form
+     * @param word a word in the group
+     * @returns simplest form of `word`
+     */
+    reduce(word: groupword): groupword {
+        return rewrite(word, this.rules);
+    }
+    /**
+     * given a word in terms of generators, check if it is in simplest form
+     * @param word a word in the group
+     * @returns if `word` is in simplest form
+     */
+    reduced(word: groupword): boolean {
+        for (let f of this.forbid) {
+            if (word.includes(f)) return false;
+        }
+        return true;
+    }
+}
+/**
+ * represents a Coxeter group, a group that can be presented with a Coxeter-style presentation
+ */
+export class CoxeterGroup extends AutoGroup {
+    /**
+     * the Coxeter matrix; this determines the group
+     */
+    readonly coxeterMatrix: matrix;
+    /**
+     * @param coxetermat the Coxeter matrix
+     */
     constructor(coxetermat: matrix) {
         for (let i = 0; i < coxetermat.length; i++) {
             if (coxetermat[i].length != coxetermat.length) {
@@ -107,26 +198,13 @@ export class CoxeterGroup {
                 }
             }
         }
+        super(...coxeterPresentation(coxetermat))
         this.coxeterMatrix = coxetermat;
-        this.rules = coxeterPresentation(coxetermat);
-        this.forbid = this.rules.map((v) => v[0]);
     }
+    /**
+     * the rank of the Coxeter group, which is the number of defining generators
+     */
     get rank(): number {
         return this.coxeterMatrix.length;
-    }
-    get generators(): string {
-        let out = "";
-        for (let i = 0; i < this.rank; i++)
-            out += String.fromCharCode(97+i);
-        return out;
-    }
-    reduce(word: groupword): groupword {
-        return rewrite(word, this.rules);
-    }
-    reduced(word: groupword): boolean {
-        for (let f of this.forbid) {
-            if (word.includes(f)) return false;
-        }
-        return true;
     }
 }

@@ -1,3 +1,7 @@
+/**
+ * rendering code for hyperbolic tilings
+ */
+
 import * as Hyper from "./hyper.js";
 import * as Weyl from "./weyl.js";
 import { ctx, clear } from "./tile_style.js";
@@ -10,14 +14,19 @@ function triangleSize(a: line, b: line, c: line): number {
     return Math.min(A.t, B.t, C.t);
 }
 
+/**
+ * creates tiling (n, m, l)
+ */
 function redraw(n: number, m: number, l: number) {
-    // 1/n + 1/m + 1/l < 1
+    // check 1/n + 1/m + 1/l < 1 for hyperbolicity
     if (n*m+n*l+m*l>=n*m*l) {
         alert("no hyperbolic tiling with these parameters");
         return;
     }
 
+    // how far out to draw triangles
     const sizelimit = 150;
+    // find the starting triangle
     let l1: line = {x:0,y:1,t:0};
     let l2: line = {x:Math.sin(Math.PI/m),y:Math.cos(Math.PI/m),t:0};
     let l3: line = (function() {
@@ -27,18 +36,23 @@ function redraw(n: number, m: number, l: number) {
         return {x,y,t};
     })();
     if (isNaN(l3.t)) return;
+    // build the symmetry group
     const G = new Weyl.CoxeterGroup([[1,m,l],[m,1,n],[l,n,1]]);
 
     let tilecount = 1;
     let starttime = performance.now();
+    // we label a triangle by its three sides and the (unique) symmetry mapping the starting triangle to it
     type triangle = [[line, line, line], groupword];
+    // starting triangle
     let orig: triangle = [[l1, l2, l3], ""];
     ctx.draw(orig);
 
+    // DFS to explore all triangles within given distance
     let to_explore: triangle[] = [orig];
     while (to_explore.length) {
         let trg = to_explore.pop() as triangle;
         for (let g of "abc") {
+            // explore the reflections of `trg` across the three sides, unless that would lead to a duplicate
             if (!G.reduced(trg[1] + "g")) continue;
             let newtrg: triangle = [[...trg[0]], trg[1] + g];
             let f = g.charCodeAt(0) - 97;
@@ -57,6 +71,8 @@ function redraw(n: number, m: number, l: number) {
     console.log("rendered " + tilecount + " tiles in " + (endtime - starttime).toFixed(3) + "ms");
 }
 
+// DEAL WITH USER INPUTS
+
 const inputs = {
     n: document.getElementById("n") as HTMLInputElement,
     m: document.getElementById("m") as HTMLInputElement,
@@ -68,7 +84,6 @@ const inputs = {
     stroke: document.getElementById("stroke") as HTMLInputElement,
     background: document.getElementById("background") as HTMLInputElement
 }
-
 class SwatchManager {
     private container: HTMLElement;
     private swatches: HTMLElement;
@@ -123,7 +138,6 @@ class SwatchManager {
                .map(i => (i as HTMLInputElement).value);
     }
 }
-
 const swatches = new SwatchManager(document.getElementById("swatches") as HTMLElement);
 
 function updateStyles() {

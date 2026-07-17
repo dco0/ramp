@@ -1,14 +1,46 @@
+/**
+ * a library for hyperbolic geometry computations
+ * this is based on the hyperboloid model
+ */
+
+/**
+ * geometric objects are represented by vectors in 2+1 Lorentzian space
+ */
 export type vec3 = {x: number, y: number, t: number};
+/**
+ * the Lorentzian dot product
+ * @param u vector
+ * @param v vector
+ * @return `u` dot `v`
+ */
 export function dot(u: vec3, v: vec3): number {
     return u.t*v.t-u.x*v.x-u.y*v.y;
 }
+/**
+ * the Lorentzian cross product
+ * @param u vector
+ * @param v vector
+ * @return `u` cross `v`
+ */
 export function cross(u: vec3, v: vec3): vec3 {
     return {x: u.y*v.t-u.t*v.y, y: u.t*v.x-u.x*v.t, t: u.y*v.x-u.x*v.y};
 }
+/**
+ * a Weyl reflection in Lorentzian space
+ * @param p vector
+ * @param l vector
+ * @return the reflection of `p` across the plane perpendicular to `l`
+ */
 export function reflect(p: vec3, l: vec3): vec3 {
     const s = 2*dot(p,l)/dot(l,l);
     return {x: p.x-s*l.x, y: p.y-s*l.y, t: p.t-s*l.t};
 }
+/**
+ * intersection of two lines
+ * @param a line
+ * @param b line
+ * @return normalized intersection point
+ */
 export function intersect(a: vec3, b: vec3): vec3 {
     let v = cross(a, b);
     if (v.t < 0) {
@@ -18,6 +50,16 @@ export function intersect(a: vec3, b: vec3): vec3 {
     v.t /= n; v.x /= n, v.y /= n;
     return v;
 }
+/**
+ * implements a form of barycentric coordinates
+ * @param A point
+ * @param B point
+ * @param C point
+ * @param a coordinate
+ * @param b coordinate
+ * @param c coordinate
+ * @return point with barycentrics [`a`:`b`:`c`] in triangle ABC
+ */
 export function bary(A: vec3, B: vec3, C: vec3, a: number, b: number, c: number): vec3 {
     let v = {
         x: A.x*a+B.x*b+C.x*c,
@@ -32,6 +74,20 @@ export function bary(A: vec3, B: vec3, C: vec3, a: number, b: number, c: number)
     return v;
 }
 
+/**
+ * useful formulas:
+ * point x on line y = dot(x, y) == 0
+ * line through x and y = cross(x, y)
+ * intersection of x and y = intersect(x, y)
+ * line through x perpendicular to y = cross(x, y)
+ * reflection of x (anything) across line y = reflect(x, y)
+ * incenter of triangle ABC = bary(A, B, C, sin(A), sin(B), sin(C))
+ */
+
+/**
+ * renderer for objects in the Poincare disk model
+ * implements conversion from hyperboloid to disk
+ */
 export class PoincareDiskRenderer {
     readonly ctx: CanvasRenderingContext2D;
     private _width: number = 0;

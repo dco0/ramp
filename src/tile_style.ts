@@ -1,3 +1,7 @@
+/**
+ * implements different styles for tilings
+ * all tilings are created from a grid of triangles; different types are created by drawing the triangles differently
+ */
 import * as Hyper from "./hyper.js";
 import * as Weyl from "./weyl.js";
 type line = Hyper.vec3;
