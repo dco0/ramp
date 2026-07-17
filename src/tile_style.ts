@@ -36,9 +36,6 @@ class TriangleRenderingContext {
         if (color != -1)  {
             this.ctx.fillStyle = this.fillpalette[color];
             this.ctx.fill();
-            this.ctx.strokeStyle = this.fillpalette[color];
-            this.ctx.lineWidth = 1;
-            this.ctx.stroke();
         }
     }
     stroke() {
