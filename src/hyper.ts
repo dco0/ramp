@@ -55,8 +55,8 @@ export class PoincareDiskRenderer {
     clear(): void {
         this.ctx.clearRect(0, 0, this._width, this._height);
     }
-    disk(): void {
-        this.ctx.ellipse(this.cx, this.cy, this.s, this.s, 0, 0, 2*Math.PI);
+    disk(r: number=1): void {
+        this.ctx.arc(this.cx, this.cy, r*this.s, 0, 2*Math.PI);
     }
     drawLine(l: vec3): void {
         const u = Math.sqrt(-dot(l,l));

@@ -17,16 +17,16 @@ disk.height = canvas.height;
 // for complex designs:
 //   -- outline, set colors
 
-type ColoringScheme = (word: groupword) => number;
+type ColoringScheme = [number, (word: groupword) => number];
 class TriangleRenderingContext {
     private readonly ctx: CanvasRenderingContext2D;
-    private fillpalette: string[] = ["red", "white", "blue", "black", "green", "yellows"];
+    private fillpalette: string[] = [];
     private colorings: [RegExp, (scheme: string, G: Weyl.CoxeterGroup) => ColoringScheme][] = [];
     private styles: {[name: string]: (a: line, b: line, c: line, s: number) => void} = {};
     private currentstroke: [boolean, number, string] = [false, 0, ""];
 
     G?: Weyl.CoxeterGroup;
-    private color: ColoringScheme = () => 0;
+    private color: ColoringScheme = [0, () => -1];
     private pattern: (a: line, b: line, c: line, s: number) => void = () => {};
 
     constructor(ctx: CanvasRenderingContext2D) {
@@ -69,29 +69,36 @@ class TriangleRenderingContext {
             this.currentstroke = [true, ...lines];
         }
     }
+    get colors_needed(): number {
+        return this.color[0];
+    }
+    set colors(colors: string[]) {
+        this.fillpalette = colors;
+    }
     registerstyle(name: string, draw: (a: line, b: line, c: line, s: number) => void) {
         this.styles[name] = draw;
     }
     draw(trg: [[line, line, line], groupword]) {
-        this.pattern(...trg[0], this.color(trg[1]));
+        this.pattern(...trg[0], this.color[1](trg[1]));
     }
-    disk(fill: string, stroke?: string, strokeWidth?: number) {
+    disk(fill: string, stroke?: string) {
         this.begin();
-        disk.disk();
+        disk.disk(1);
+        if (stroke != undefined) {
+            this.ctx.fillStyle = stroke;
+            this.ctx.fill();
+            this.begin();
+            disk.disk(0.995);
+        }
         this.ctx.fillStyle = fill;
         this.ctx.fill();
-        if (stroke != undefined) {
-            this.ctx.lineWidth = strokeWidth ?? 0;
-            this.ctx.strokeStyle = stroke;
-            this.ctx.stroke();
-        }
     }
 }
 export const ctx = new TriangleRenderingContext(_ctx);
 
 ctx.registercoloring(/abel_a?b?c?/, (scheme, G) => {
     let t = scheme.slice(5);
-    return (word) => [...word].reduce((n,c) => (n+(t.includes(c)?1:0)),0)%2;
+    return [2, (word) => [...word].reduce((n,c) => (n+(t.includes(c)?1:0)),0)%2];
 });
 ctx.registercoloring(/dih_[abc]_[abc](_\d+)?/, (scheme, G) => {
     let mat = G.coxetermatrix;
@@ -99,19 +106,23 @@ ctx.registercoloring(/dih_[abc]_[abc](_\d+)?/, (scheme, G) => {
     let v = scheme[6];
     let n = parseInt(scheme.slice(8)) || (u=="a"?mat[1][2]:u=="b"?mat[0][2]:mat[0][1]);
     let rules: Weyl.rewriterules = [[u,""], ["aa",""], ["bb",""], ["cc",""]];
-    return (word) => {
+    return [n, (word) => {
         word = Weyl.rewrite(word, rules);
         let a = word.length%2;
         let b = word.endsWith(v)?(1-2*a):(2*a-1);
         return (n+(a+b*word.length)/2%n)%n;
-    };
+    }];
 });
 ctx.registercoloring(/none/, (scheme, G) => {
-    return () => -1;
+    return [0, () => -1];
 });
 ctx.registercoloring(/plain/, (scheme, G) => {
-    return () => 0;
+    return [1, () => 0];
 });
+ctx.registercoloring(/const\d+/, (scheme, G) => {
+    let n = parseInt(scheme.slice(5));
+    return [n, () => 0];
+})
 ctx.registerstyle("plain", (a, b, c, s) => {
     let A = Hyper.intersect(b, c), B = Hyper.intersect(a, c), C = Hyper.intersect(a, b);
     ctx.begin();
