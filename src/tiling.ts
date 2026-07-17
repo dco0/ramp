@@ -14,6 +14,9 @@ function triangleSize(a: line, b: line, c: line): number {
     return Math.min(A.t, B.t, C.t);
 }
 
+// how far out to draw triangles
+const sizelimit = 150;
+
 /**
  * creates tiling (n, m, l)
  */
@@ -24,8 +27,6 @@ function redraw(n: number, m: number, l: number) {
         return;
     }
 
-    // how far out to draw triangles
-    const sizelimit = 150;
     // find the starting triangle
     let l1: line = {x:0,y:1,t:0};
     let l2: line = {x:Math.sin(Math.PI/m),y:Math.cos(Math.PI/m),t:0};
@@ -53,7 +54,7 @@ function redraw(n: number, m: number, l: number) {
         let trg = to_explore.pop() as triangle;
         for (let g of "abc") {
             // explore the reflections of `trg` across the three sides, unless that would lead to a duplicate
-            if (!G.reduced(trg[1] + "g")) continue;
+            if (!G.reduced(trg[1] + g)) continue;
             let newtrg: triangle = [[...trg[0]], trg[1] + g];
             let f = g.charCodeAt(0) - 97;
             for (let i = 0; i < 3; i++) {
@@ -82,7 +83,8 @@ const inputs = {
     
     width: document.getElementById("width") as HTMLInputElement,
     stroke: document.getElementById("stroke") as HTMLInputElement,
-    background: document.getElementById("background") as HTMLInputElement
+    background: document.getElementById("background") as HTMLInputElement,
+    border: document.getElementById("border") as HTMLInputElement
 }
 class SwatchManager {
     private container: HTMLElement;
@@ -188,12 +190,12 @@ document.getElementById("renderBtn")?.addEventListener("click", (e) => {
     let l = 2;
 
     const G = new Weyl.CoxeterGroup([[1,m,l],[m,1,n],[l,n,1]]);
-    if (inputs.coloring.value == "none") {
-        ctx.coloring = ["none", G];
+    let stroke = inputs.coloring.value == "none";
+    ctx.coloring = [inputs.coloring.value, G];
+    if (stroke) {
         ctx.lines = [parseFloat(inputs.width.value), inputs.stroke.value];
     }
     else {
-        ctx.coloring = [inputs.coloring.value, G];
         ctx.lines = false;
     }
 
@@ -207,7 +209,8 @@ document.getElementById("renderBtn")?.addEventListener("click", (e) => {
     }
 
     clear();
-    ctx.disk(inputs.background.value, inputs.coloring.value == "none" ? inputs.stroke.value : undefined);
+    ctx.disk(1, inputs.border.value);
+    ctx.disk(1-1/sizelimit, inputs.background.value);
     ctx.style = inputs.pattern.value;
     redraw(n,m,l);
 });

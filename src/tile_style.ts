@@ -36,6 +36,9 @@ class TriangleRenderingContext {
         if (color != -1)  {
             this.ctx.fillStyle = this.fillpalette[color];
             this.ctx.fill();
+            this.ctx.strokeStyle = this.fillpalette[color];
+            this.ctx.lineWidth = 1;
+            this.ctx.stroke();
         }
     }
     stroke() {
@@ -78,15 +81,9 @@ class TriangleRenderingContext {
     draw(trg: [[line, line, line], groupword]) {
         this.pattern(...trg[0], this.color[1](trg[1]));
     }
-    disk(fill: string, stroke?: string) {
+    disk(radius: number, fill: string) {
         this.begin();
-        disk.disk(1);
-        if (stroke != undefined) {
-            this.ctx.fillStyle = stroke;
-            this.ctx.fill();
-            this.begin();
-            disk.disk(0.995);
-        }
+        disk.disk(radius);
         this.ctx.fillStyle = fill;
         this.ctx.fill();
     }
@@ -119,7 +116,7 @@ ctx.registerColoring(/plain/, (scheme, G) => {
 ctx.registerColoring(/const\d+/, (scheme, G) => {
     let n = parseInt(scheme.slice(5));
     return [n, () => 0];
-})
+});
 ctx.registerStyle("plain", (a, b, c, s) => {
     let A = Hyper.intersect(b, c), B = Hyper.intersect(a, c), C = Hyper.intersect(a, b);
     ctx.begin();
