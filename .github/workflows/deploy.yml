@@ -31,6 +31,7 @@ jobs:
         with:
           root_file: |
             doc/writeups/tiling.tex
+          work_in_root_file_dir: true
 
       - name: Build site
         run: |
