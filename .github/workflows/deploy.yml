@@ -30,6 +30,13 @@ jobs:
         run: |
           npm run build
           npm run doc
+      
+      - name: Build writeups
+        uses: xu-cheng/latex-action@v4
+        with:
+          root_file: |
+            doc/writeups/tiling.tex
+          post_compile: mkdir dist/writeups && cp -t dist/writeups doc/writeups/*.pdf
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

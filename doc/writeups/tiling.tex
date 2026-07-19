@@ -1,0 +1,167 @@
+\documentclass{article}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{indentfirst}
+\usepackage[margin=1in]{geometry}
+\usepackage[colorlinks=true,linkcolor=MidnightBlue]{hyperref}
+\usepackage[shortlabels,inline]{enumitem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{tikz}
+
+\usetikzlibrary{arrows.meta,positioning}
+
+\setlist{nosep,itemsep=0.2ex}
+
+\newtheorem{thm}{Theorem}
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\theoremstyle{remark}
+\newtheorem*{rmk}{Remark}
+
+\title{Drawing hyperbolic tilings}
+\author{Evin}
+%\date{}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+On the fourth problem set of Hyperbolic Geometry and Mathematical Art, question 3 asked for making different tilings of the hyperbolic plane. I thought, ``wouldn't it be nice to have a program to do that automatically?'' Unfortunately, it was at around 11 PM on Thursday that I had this thought, and the show and tell would be tomorrow. So the next day I woke up early and spent an hour before breakfast building a sloppy prototype to share.
+
+Afterwards I ended up spending the weekend completely redesigning the generator into something that's clean, mathematically interesting, and good enough to publish. This document is about all of the math that goes into it.
+
+\section{The hyperboloid model}
+The Poincar\'e disk model is nice, but it's not the most well-suited for geometric computations. We like lines, but the Poincar\'e disk has circles. Also, the Poincar\'e disk heavily squishes hyperbolic space far from the origin, and this magnifies the effect of rounding errors. Fortunately there is another model that is amazing for doing computations in, so I just do all of the geometry in the hyperboloid model and then convert to the Poincar\'e disk for rendering.
+
+This model is basically a twist on the model of spherical geometry being the geometry of a sphere. We embed the hyperbolic plane as a hyperboloid in some strange 3D space. This is very closely related to special relativity, so we will be using a lot of physics terminology.
+\begin{defn}
+    The \emph{Minkowski space} $\mathbb R^{2+1}$ is the vector space $\mathbb R^3$ with the dot product replaced by
+    \[(x_1,y_1,t_1)\cdot(x_2,y_2,t_2)=t_1t_2-x_1x_2-y_1y_2.\]
+\end{defn}
+
+For a vector $v$, let $\Vert v\Vert$ denote the norm, or squared length. We calculate the length by $\Vert v\Vert=v\cdot v$, just like in Euclidean space. So our choice of dot product endows $\mathbb R^{2+1}$ with a geometry, which is the geometry of special relativity. In particular, we call our coordinates $x$, $y$, and $t$ because $x$ and $y$ act like spatial coordinates and $t$ acts like the time coordinate. Also, note that the length squared can be negative! We can split all of the vectors into three types based on the squared length.
+\begin{defn}
+    A vector $v\in\mathbb R^{2+1}$ is
+    \begin{itemize}
+        \item \emph{timelike} if $\Vert v\Vert>0$,
+        \item \emph{lightlike} if $\Vert v\Vert=0$,
+        \item \emph{spacelike} if $\Vert v\Vert<0$.
+    \end{itemize}
+\end{defn}
+
+Now the ``unit sphere'' $S$ in this space is the set of all vectors $v$ with $\Vert v\Vert=1$, which geometrically is a hyperboloid of two sheets. The future sheet $S_+$ is the sheet where everything has a positive time coordinate, and the past sheet $S_-$ is the sheet where everything has a negative time coordinate. The points in $S_+$ will be the points of our hyperbolic plane.
+
+\subsection{Relation to other models}
+The hyperboloid model is related to the Poincar\'e disk by stereographic projection. Let the south pole be the point $(0,0,-1)\in S_-$. Then projecting through the south pole onto $t=0$ gives the Poincar\'e disk model.
+
+We can also project through the origin $(0,0,0)$ onto some plane parallel to the $x$-$y$ plane, then this will also give a bijection from $S_+$ into the interior of some disk. In fact, lines in this new model will become straight lines! This model is called the Beltrami-Klein model. However this model has a compromise: while lines become straight, angles are not preserved.
+
+Another model that can be projected to either the Poincar\'e disk or the Beltrami-Klein disk is the hemisphere model. This takes place on the hemisphere defined by $x^2+y^2+t^2=1,t>0$. Projecting onto the $x$-$y$ plane through the north pole gives the Poincar\'e disk, and projecting along the $t$-direction gives the Beltrami-Klein model.
+
+When we use the vertical projection that relates the hemisphere and Beltrami-Klein models, but instead apply it to the hyperboloid model instead, we get a model of hyperbolic geometry that uses the entire plane. This model is called the Gans model, and it has the unique property that straight lines in the Gans model are hyperbolas. 
+
+\begin{rmk}
+    I accidentally rediscovered the Gans model by directly changing the radial coordinate in the Poincar\'e disk when I was trying to solve the issue of things getting compressed near the boundary.
+\end{rmk}
+
+\subsection{Defining geometry}
+We could define the geometry of the hyperboloid model by its relation to the Poincar\'e disk. In my opinion it's much more elegant to try to define the geometry by analogy with spherical geometry, and then leave the relation to the Poincar\'e disk as a theorem/``exercise to the reader.'' This is because the definition of hyperbolic geometry with this setup is really, really nice.
+
+We know what points are, so now let's define lines. In spherical geometry, lines are great circles, which are basically just planes through the origin. This gives us the definition of line.
+\begin{defn}
+    A line in the hyperboloid model is the intersection of $S_+$ with a plane through the origin.
+\end{defn}
+For computational purposes, a plane through the origin has an equation of the form $\ell\cdot v=0$ for some vector $\ell$, and so we can represent a line by its ``normal vector'' $\ell$. Note that this is not unique. Also, we need a line to actually have points, and it turns out that the line will have points iff $\ell$ is spacelike.
+
+Next, let's do angles. In spherical geometry, we can just calulate the angle between two lines by taking the angle between their planes. We can do the same thing here.
+\begin{defn}
+    Let $L$ and $K$ be two lines. Then the angle between them is
+    \[\theta=\cos^{-1}\left(\frac{L\cdot K}{\sqrt{\Vert L\Vert\cdot\Vert K\Vert}}\right).\]
+\end{defn}
+\begin{rmk}
+    Note that if we scale $\ell_1$, say, by a positive real number, then it represents the same line and the angle is unchanged. However, if we scale $\ell_1$ be a negative real number, then the angle gets replaced by the supplementary angle. So our vectors actually represent directed lines.
+\end{rmk}
+
+And then, we have distances. The distance from $P$ to $Q$ on $S_+$ can be determined as the length of the shortest path from $P$ to $Q$ staying on $S_+$, since we already know how to calculate distances in the ambient Minkowski space. This gives the following distance formula.
+\begin{defn}
+    Let $P$ and $Q$ be two points. Then the distance between them is
+    \[\vert PQ\vert=\cosh^{-1}(-P\cdot Q).\]
+\end{defn}
+
+\subsection{Doing geometry}
+The geometry of the hyperboloid model is defined by simple concepts in linear algebra, and this leads to computing stuff being very nice. For example, the line between two points $P$ and $Q$ is determined (up to scale) as the vector $v$ satisfying $v\cdot P=v\cdot Q=0$. This is like the usual cross product, so we introduce a cross product for Minkowski space.
+\begin{defn}
+    The \emph{cross product} of two vectors $(x_1,y_1,t_1),(x_2,y_2,t_2)\in\mathbb R^{2+1}$ is given by
+    \[(x_1,y_1,t_1)\times(x_2,y_2,t_2)=(y_1t_2-y_2t_1,t_1x_2-t_2x_1,{\color{blue}y_1x_2-y_2x_1}).\]
+\end{defn}
+Note that the $t$-coordinate in {\color{blue}blue} has a sign change compared to the ordinary cross product, which is necessary to have all the properties we want.
+\begin{rmk}
+    This is a good time to give my ramble about what the cross product \emph{actually is}. There is a unique up to scale function $\varepsilon(u,v,w)$ of three vectors satisfying the following properties:
+    \begin{itemize}
+        \item \emph{multilinearity}: $\varepsilon(\alpha u,v,w)=\alpha\varepsilon(u,v,w)$ and $\varepsilon(u_1+u_2,v,w)=\varepsilon(u_1,v,w)+\varepsilon(u_2,v,w)$, and similarly for the other two arguments.
+        \item \emph{antisymmetry}: swapping any two arguments negates $\varepsilon$.
+    \end{itemize}
+
+    $\varepsilon$ is basically a way to measure volumes, and note that this definition doesn't care about the dot product, so it will do the same thing regardless of whether the space is ordinary $\mathbb R^3$ or Minkowski $\mathbb R^{2+1}$ or whatever geometry. Now the cross product is basically a way to represent $\varepsilon$: we can define the cross product of $u$ and $v$ to be the unique vector $u\times v$ such that $\varepsilon(u,v,w)=(u\times v)\cdot w$. In Minkowski space we changed the dot product while keeping the same $\varepsilon$, thus the cross product must change.
+\end{rmk}
+
+Anyways, using the cross product, we know that $u\times v$ has zero dot product with both $u$ and $v$. In fact, this solves three problems at once!
+\begin{thm}
+    For two points $P$ and $Q$, the line through $P$ and $Q$ is $P\times Q$. For two lines $L$ and $K$, their intersection point is the unique scalar multiple of $L\times K$ that lies on $S_+$ (if $L\times K$ is timelike). For a point $P$ and line $L$, the line through $P$ perpendicular to $L$ is $P\times L$.
+\end{thm}
+
+\begin{rmk}
+    This naturally invites us to think of how $L\times K$ relates to the geometric properties of $L$ and $K$. If $L\times K$ is timelike, then $L$ and $K$ intersect. If $L\times K$ is spacelike, then $L$ and $K$ don't intersect. When $L\times K$ is lightlike, this is when they almost intersect but don't. In the Poincar\'e disk they would appear to intersect on the boundary.
+\end{rmk}
+
+These already account for a lot of geometry we want to do. But for making tilings, there's another extremely important operation: reflecting an object across a line. Fortunately, this is also easy.
+\begin{thm}
+Given an object $X$ and line $L$, the reflection of $X$ across $L$ is
+\[\sigma_L(X)=X-2\frac{X\cdot L}{L\cdot L}L.\]
+\end{thm}
+\begin{proof}
+    We want to reflect $X$ over the plane perpendicular to $L$. Now consult the diagram.
+
+    \begin{figure}[h]
+        \centering
+        \begin{tikzpicture}
+            \draw[-{>[length=1mm,width=2mm]}] (0,0)--(5,0);
+            \node[anchor=west] at (5,0) {$L$};
+            \draw[-{>[length=1mm,width=2mm]}] (0,0)--(4,2);
+            \node[anchor=west] at (4,2) {$X$};
+            \draw[dashed,red] (4,2)--(4,0);
+            \draw[-{>[length=1mm,width=2mm]},dashed,blue] (0,0)--(4,0);
+            \node[anchor=north] at (4,0) {$v=\frac{X\cdot L}{L\cdot L}L$};
+            \draw[Fuchsia] (0,3)--(0,-1);
+            \node[anchor=north] at (0,-1) {$L^\perp$};
+            \draw[dashed,blue] (4,2)--(-4,2);
+            \draw[-{>[length=1mm,width=2mm]}] (0,0)--(-4,2);
+            \node[anchor=east] at (-4,2) {$\sigma_L(X)$};
+            \node[anchor=south] at (2,2) {$v$};
+            \node[anchor=south] at (-2,2) {$v$};
+        \end{tikzpicture}
+    \end{figure}
+\end{proof}
+
+The tiling generator also uses one other construction. In the `Poly3' tiling, we need to compute a point equidistant from all three sides of a triangle. We call this point the \emph{incenter}. There's also a nice way to calculate the incenter, using barycentric coordinates.
+\begin{defn}
+    Let $A$, $B$, $C$ be points of $S_+$. A point $P\in S_+$ has \emph{barycentric coordinates} $[x:y:z]$ in triangle $\triangle ABC$ if $P$ is a scalar multiple of $xA+yB+zC$.
+\end{defn}
+These are called barycentric, because if we assign masses $x$ to $A$, $y$ to $B$, and $z$ to $C$ then $P$ will be the center of mass. Also note that if we scale $x$, $y$, and $z$ by the same constant, then $P$ doesn't change.
+\begin{thm}
+    The incenter of $\triangle ABC$ has barycentric coordinates
+    \[[\sin \angle A:\sin \angle B:\sin \angle C].\]
+\end{thm}
+\begin{proof}
+    Let $L$, $K$, and $M$ be norm $-1$ vectors representing sides $BC$, $AC$, and $AB$. Then the angle bisectors of $\angle A$ are given by $K\pm M$ and similarly for the other angles. Then the intersection of angle bisectors of $\angle A$ and $\angle B$ are
+    \[(K\pm_1 M)\times (L\pm_2 M)=K\times L\pm_1 M\times K\pm_2 K\times M.\]
+    We know that $K\times L$ is a multiple of $C$ with length $\sqrt{\Vert K\Vert\cdot \Vert L\Vert}\sin\angle C$. So $K\times L=\pm C\sin\angle C$ and similarly for the other products, so this expression is the point with barycentric coordinates $[\pm \sin \angle A:\pm\sin\angle B:\pm\sin\angle C]$ in $\triangle ABC$. The incenter must lie on every angle bisector, so it has this form. But the only choice of signs that yields a point inside $\triangle ABC$ is all positive (or all negative, which is equivalent). So the incenter is $[\sin \angle A:\sin \angle B:\sin \angle C]$.
+\end{proof}
+\begin{rmk}
+    If you are familiar with barycentric coordinates in Euclidean geometry, this expression also works in the Euclidean case. It also works for spherical geometry.
+\end{rmk}
+\begin{rmk}
+    I discovered that hyperbolic barycentric coordinates work accidentally, by computing the incenter this way. I couldn't figure out how to ensure the right choice of signs until realizing I could rewrite the expression as $\pm A\sin\angle A\pm B\sin\angle B\pm C\sin\angle C$ and then choose all positives. Then I noticed this was basically barycentric coordinates.
+\end{rmk}
+\end{document}

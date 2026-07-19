@@ -2,3 +2,9 @@ node_modules
 build
 dist/*.js
 dist/index.html
+doc/writeups/*.pdf
+doc/writeups/*.out
+doc/writeups/*.aux
+doc/writeups/*.log
+doc/writeups/*.synctex.gz
+dist/writeups
