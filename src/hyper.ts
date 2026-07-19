@@ -7,6 +7,7 @@
  * geometric objects are represented by vectors in 2+1 Lorentzian space
  */
 export type vec3 = {x: number, y: number, t: number};
+export type coord = {x: number, y: number};
 /**
  * the Lorentzian dot product
  * @param u vector
@@ -100,12 +101,12 @@ export class PoincareDiskRenderer {
     }
     set width(width: number) {
         this._width = width;
-        this.s = Math.min(this._width,this._height)/2-5;
+        this.s = Math.min(this._width,this._height)/2;
         this.cx = width/2;
     }
     set height(height: number) {
         this._height = height;
-        this.s = Math.min(this._width,this._height)/2-5;
+        this.s = Math.min(this._width,this._height)/2;
         this.cy = height/2;
     }
     clear(): void {
