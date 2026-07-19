@@ -36,7 +36,7 @@ jobs:
         with:
           root_file: |
             doc/writeups/tiling.tex
-          post_compile: mkdir dist/writeups && cp -t dist/writeups doc/writeups/*.pdf
+          post_compile: mkdir dist/writeups && cp doc/writeups/*.pdf dist/writeups
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
