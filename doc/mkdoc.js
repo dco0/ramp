@@ -1,12 +1,13 @@
 import { marked } from "marked";
-import { readFileSync, writeFileSync } from "node:fs";
+import * as fs from "node:fs";
+import * as path from "node:path";
 
 const markedOptions = {
     gfm: true
 }
 
-const html = marked.parse(readFileSync("README.md", {encoding: "utf-8"}), markedOptions);
-writeFileSync("dist/index.html", `
+const html = marked.parse(fs.readFileSync("README.md", {encoding: "utf-8"}), markedOptions);
+fs.writeFileSync("dist/index.html", `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,3 +20,8 @@ ${html}
 </body>
 </html>
 `);
+
+if (!fs.existsSync("dist/writeups")) fs.mkdirSync("dist/writeups");
+fs.globSync("doc/writeups/*.pdf").forEach((file) => {
+    fs.copyFileSync(file, path.join("dist/writeups", path.relative("doc/writeups", file)));
+});

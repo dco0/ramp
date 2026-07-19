@@ -25,18 +25,17 @@ jobs:
 
       - name: Install dependencies
         run: npm i
-
-      - name: Build site
-        run: |
-          npm run build
-          npm run doc
       
       - name: Build writeups
         uses: xu-cheng/latex-action@v4
         with:
           root_file: |
             doc/writeups/tiling.tex
-          post_compile: mkdir dist/writeups && cp doc/writeups/*.pdf dist/writeups
+
+      - name: Build site
+        run: |
+          npm run build
+          npm run doc
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
