@@ -1,0 +1,315 @@
+COURSES:
+  HGMA:
+    - geometry
+    - hyperbolic
+    - axiom
+    - postulate
+    - coxeter
+    - escher
+    - euclid
+    - tarski
+    - circle limit
+    - tiling
+    - triangle
+    - line
+    - hyperbolic line
+    - point
+    - angle
+    - segment
+    - parallel
+    - reflection
+    - rotation
+    - translation
+    - glide reflection
+    - invert
+    - circle
+    - tangent
+    - orthogonal
+    - poincare
+    - oincare disk
+    - tiling generator
+    - symmetry
+    - construction
+    - compass
+    - straightedge
+    - power of a point
+  RW:
+    - finite difference
+    - difference table
+    - probability
+    - random variable
+    - expected value
+    - variance
+    - total variation
+    - random walk
+    - diffusion
+    - brownian motion
+    - markov chain
+    - transient
+    - recurrent
+    - harmonic function
+    - generating function
+    - i^2 != -1
+    - pi != 3.14
+    - laplacian
+    - most beautiful equation
+  VCA:
+    - complex number
+    - real
+    - imaginary
+    - complex plane
+    - modulus
+    - argument
+    - exponential
+    - surjective
+    - injective
+    - bijective
+    - function
+    - complex
+    - limit
+    - continuous
+    - differentiable
+    - derivative
+    - conformal
+    - singularity
+    - holomorphic
+    - homophobic
+    - open
+    - closed
+    - boundary
+    - closure
+    - integral
+    - contour
+    - cauchy's theorem
+    - cauchy-riemann
+    - polar coordinates
+    - euler's formula
+    - mobius transform
+    - riemann sphere
+    - stereographic projection
+  MINICOURSES:
+    - minicourse
+    - antiproblems
+    - nine slips
+    - due east
+    - impostor syndrome
+    - real analysis
+    - fourier transform
+    - minihorse
+    - time complexity
+    - p = np
+    - np complete
+    - linear algebra
+    - error-correcting code
+    - isometry
+    - orthogonal
+    - robotics
+    - 14d torus
+    - invented or discovered
+    - table
+    - set theory
+    - zermelo-fraenkel
+    - axiom of choice
+    - vitali set
+    - measure
+    - number theory
+    - constructible number
+    - ring
+    - field
+    - field extension
+    - square root
+    - doubling the cube
+    - trisecting an angle
+    - big number
+  LUNCH TALKS:
+    - riemann
+    - zeta function
+    - riemann hypothesis
+    - basel problem
+    - lie group
+    - catalan number
+  COLLOQUIA:
+    - no rectangles
+    - greedy algorithm
+    - random algorithm
+    - finite field
+    - learning from experts
+    - mind reader
+  TERMINOLOGY:
+    - theorem
+    - proof
+    - big o
+    - aftsoc
+    - ftsoc
+    - wlog
+    - qed
+    - tfae
+    - wts
+    - iff
+    - trivial
+    - induction
+    - contradiction
+    - trivial by induction
+    - exercise to the reader
+    - latex
+    - all horses are the same color
+    - fields medal
+PEOPLE:
+  PROFS:
+    - henry cohn
+    - michael king
+    - li-mei lim
+  COUNSELORS:
+    - henry not cohn
+    - mik
+    - lexi
+    - luna
+    - victor
+    - evin
+  STUDENTS:
+    - amber
+    - amy
+    - andreas
+    - anna
+    - aryan
+    - jerry
+    - brianna
+    - bridget
+    - eliza
+    - gabe
+    - jiya
+    - kalan
+    - kenna
+    - kunal
+    - lucas
+    - lukas
+    - michelle
+    - rivven
+    - ryan
+    - sarah
+    - sneha
+    - sofia
+    - summer
+    - theo
+  GUESTS:
+    - interphase
+    - rsi
+    - michelle's friend from ms
+    - fabio
+    - yufei
+    - larry guth
+    - john urschel
+    - ricky magner
+    - shiqiao
+    - guy from iowa
+    - michael luo
+    - kenta
+    - paige
+    - vijay
+CULTURE:
+  SAYINGS:
+    - if you're sleeping, you're behind
+    - what would kunal do
+    - that's not ridiculous
+    - gmi
+    - ngmi
+    - lowkey tuff
+    - i guess bro
+    - cunkel funkel gunkel hunkel
+    - slop slop slop sahur
+    - ai slop
+    - six seven
+    - larp
+    - demerits
+    - a monad is a monoid in the category of endofunctors
+    - i'm a chud i'm a chud i'm a fat little chud
+    - slime out
+    - performative male
+    - 6'3" feminist
+    - worse/better than epstein
+    - erase forcefully
+    - chicken tikka masala
+    - bro is
+    - henry is attracted to all horses
+    - too far gone
+    - many such cases
+  EMOJI:
+    - victor smolder
+    - rampy
+    - kalan pog
+    - aryan bruh
+    - crabby lexi
+  THINGS:
+    - sleep schedule
+    - frog hat
+    - banana
+    - hagoromo
+    - button
+    - techcash
+    - iced tea spill
+    - high noon
+    - cambridge massacre
+    - chalk experiment
+    - fourth of july
+    - window fans
+    - dry ice
+    - cooler
+  ACTIVITIES:
+    - hotpot
+    - gift card
+    - mahjong
+    - tetris
+    - set
+    - psetting
+    - breaking hagoromo
+    - wrestling
+    - mafia
+    - bang
+    - revere beach
+    - museum
+    - rock climbing
+    - escape room
+    - cards
+    - poker
+    - bs poker
+    - catfishing
+    - enclose.horse
+    - only connect
+    - shiqiao's birthday
+    - binder clips
+    - crochet
+    - spamming gifs
+    - arm wrestling
+    - celsius pong
+    - chairing
+  PLACES:
+    - hmart
+    - brothers
+    - eastern edge
+    - toscanini's
+    - berryline
+    - honeycomb
+    - teado
+    - concord market
+    - boston
+    - cambridge
+    - harvard bridge
+    - harvard
+    - central
+    - kendall
+    - red line
+    - green line
+    - blue line
+    - park street
+    - brick oven
+    - baker lounge
+    - baker basement
+    - building 2
+    - 2-290
+    - 2-255
+    - 2-132
+    - student center
+    - math lounge
+    - mit chapel
+    - the cage
+    - chairing tunnel

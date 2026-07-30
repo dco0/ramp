@@ -1,6 +1,8 @@
 # RAMP
 Some code for RAMP 2026. Website at [https://dco0.github.io/ramp/](https://dco0.github.io/ramp/), code at [https://github.com/dco0/ramp](https://github.com/dco0/ramp).
 
+## [Writeups](https://dco0.github.io/ramp/writeups)
+
 ## [Tilings](https://dco0.github.io/ramp/tiling.html)
 Render various hyperbolic tilings.
 

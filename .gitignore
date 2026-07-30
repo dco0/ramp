@@ -2,9 +2,13 @@ node_modules
 build
 dist/*.js
 dist/index.html
+dist/writeups
+dist/*.yml
 doc/writeups/*.pdf
 doc/writeups/*.out
 doc/writeups/*.aux
 doc/writeups/*.log
+doc/writeups/*.bcf
+doc/writeups/*.blg
+doc/writeups/*.run.xml
 doc/writeups/*.synctex.gz
-dist/writeups

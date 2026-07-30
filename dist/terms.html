@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>RAMP terms</title>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="theme.css" />
+    </head>
+    <body style="margin: 0px;">
+        <div style="display: flex; justify-content: center; align-items: center; height: 100vh;; margin: 0px;">
+            <span id="current"></span>
+        </div>
+        <script type="module">
+            const term = document.getElementById("current");
+            const xhttp = new XMLHttpRequest();
+            xhttp.onload = function() {
+                const terms = this.responseText.split("\n").filter((v) => v.trim().startsWith("-")).map((v) => v.trim().slice(2));
+                console.log(terms);
+
+                function randomize() {
+                    term.innerText = terms[Math.floor(terms.length * Math.random())];
+                    term.style.fontSize = "1rem";
+                    const w = 0.8 * Math.min(window.innerWidth / term.getBoundingClientRect().width, window.innerHeight / term.getBoundingClientRect().height);
+                    console.log(w);
+                    term.style.fontSize = "" + w + "rem";
+                }
+                randomize();
+                window.addEventListener("click", randomize);
+            }
+            xhttp.open("GET", "terms.yml", true);
+            xhttp.send();
+        </script>
+    </body>
+</html>
