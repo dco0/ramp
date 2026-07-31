@@ -8,6 +8,7 @@
 \usepackage{amssymb}
 \usepackage{amsthm}
 \usepackage{tikz}
+\usepackage{graphicx}
 
 \usetikzlibrary{arrows.meta,positioning}
 
@@ -18,6 +19,8 @@
 \newtheorem{defn}[thm]{Definition}
 \theoremstyle{remark}
 \newtheorem*{rmk}{Remark}
+
+\newenvironment{aside}{\renewcommand{\thesection}{(\textit{\arabic{section}})}\renewcommand{\thesubsection}{(\textit{\arabic{section}.\arabic{subsection}})}}{\renewcommand{\thesection}{\arabic{section}}\renewcommand{\thesubsection}{\arabic{section}.\arabic{subsection}}}
 
 \title{Drawing hyperbolic tilings}
 \author{Evin}
@@ -164,4 +167,140 @@ These are called barycentric, because if we assign masses $x$ to $A$, $y$ to $B$
 \begin{rmk}
     I discovered that hyperbolic barycentric coordinates work accidentally, by computing the incenter this way. I couldn't figure out how to ensure the right choice of signs until realizing I could rewrite the expression as $\pm A\sin\angle A\pm B\sin\angle B\pm C\sin\angle C$ and then choose all positives. Then I noticed this was basically barycentric coordinates.
 \end{rmk}
+
+\begin{aside}
+\subsection{The Darboux product}
+An annoying thing about the Poincar\'e disk is that hyperbolic lines are circles. Actually, if we think hard enough about circles, then we can derive the hyperboloid model.
+
+A circle can be written with an equation of the form
+\[a(x^2+y^2)+bx+cy+d=0.\]
+This form also allows lines as well, by setting $a=0$. So every hyperbolic line in the Poincar\'e disk can be put into this form.
+
+We can view $(a,b,c,d)$ as a vector in $\mathbb R^4$. Similarly to the thing where representing a line in the hyperboloid model carries ``too much information,'' this representation does too. Scaling the vector yields the same circle but changes the vector. We choose to think of these vectors as ``weighted circles'' which have a mass given by $a$ in addition to their center and radius.
+
+Recall that the power of a point $P$ with respect to a circle with radius $R$ and center $O$ is given by $OP^2-R^2$, and this has nice properties. Viewing a point as a circle with zero radius, the power of a point generalizes to the power between two weighted circles.
+\begin{defn}
+    Let $\Gamma$ be a weighted circle with mass $M_1$, center $O_1$, and radius $R_1$ and $\Delta$ be a weighted circle with mass $M_2$, center $O_2$, and radius $R_2$. Then the \emph{Darboux product} is given by
+    \[\Gamma\cdot\Delta=M_1M_2(O_1O_2^2-R_1^2-R_2^2).\]
+\end{defn}
+\begin{thm}
+    Suppose $\Gamma$ and $\Delta$ are weighted circles of masses $M_1$ and $M_2$ and radii $R_1$ and $R_2$ that intersect at an angle of $\theta$. Then
+    \[\Gamma\cdot\Delta=2M_1M_2R_1R_2\cos\theta.\]
+\end{thm}
+\begin{proof}
+    Let $O_1$ and $O_2$ be the centers of $\Gamma$ and $\Delta$, and let $P$ be one of the intersection points. Then $\theta=180^\circ-\angle O_1PO_2$, and then apply the law of cosines on $\triangle O_1PO_2$.
+\end{proof}
+
+\begin{rmk}
+    Note that the squared length of a circle with mass $M$ and radius $R$ in for the Darboux product is $-2M^2R^2$. So this is basically the vector formula $u\cdot v= |u| |v| \cos\theta$ but using the Darboux product instead. This leads to a nice proof that inversion preserves angles.
+\end{rmk}
+
+If we compute everything we get the following formula.
+\begin{thm}
+    Let $\Gamma=(a_1,b_1,c_1,d_1)$ and $\Delta=(a_2,b_2,c_2,d_2)$ be weighted circles. Then
+    \[\Gamma\cdot\Delta=d_1a_2+d_2a_1-\frac{b_1b_2}2-\frac{c_1c_2}2.\]
+\end{thm}
+\begin{rmk}
+    This formula allows us to calculate the Darboux product for lines as well, by setting $a=0$.
+\end{rmk}
+
+So the Darboux product is also just a strange modified dot product, and we can use it to define the geometry on the space of circles. It turns out that it is equivalent by a change of variables to the dot product $(x_1,y_1,z_1,w_1)\cdot(x_2,y_2,z_2,w_2)=w_1w_2-x_1x_2-y_1y_2-z_1z_2$, which looks a lot like the Minkowski dot product.
+\begin{defn}
+    The space $\mathbb R^{3+1}$ is the space of weighted circles with the Darboux product as the dot product.
+\end{defn}
+
+Now it's time to relate all of this to hyperbolic geometry. Let $\Omega$ be the boundary of the disk, then the hyperbolic lines are exactly the weighted circles $\Gamma$ satisfying $\Gamma\cdot\Omega=0$. The Darboux product restricts to the space of hyperbolic lines to give it a geometry, and this geometry is exactly the geometry of $\mathbb R^{2+1}$.
+
+This gives us the geometry of lines, but we want to look at the geometry of points. Fortunately, there's a good relationship between points and lines in this representation.
+\begin{thm}
+    For two points $P$ and $Q$ on the (Euclidean) plane, the space of weighted circles through $P$ and $Q$ is a plane through the origin in $\mathbb R^{3+1}$.
+\end{thm}
+We know that the hyperbolic lines through $P$ are the weighted circles through $P$ and its inverse. Thus they form a plane in $\mathbb R^{3+1}$ where everything is a hyperbolic line, so they form a plane in the space of hyperbolic lines. Then we can label $P$ by the vector perpendicular to this plane in $\mathbb R^{2+1}$.
+
+\begin{rmk}
+    This is an approach to representing hyperbolic things that I seriously considered. Then I realized it was equivalent to the hyperboloid.
+\end{rmk}
+\end{aside}
+
+\section{Navigating the plane via group theory}
+As you may have discovered on problem set 7, we can get from any triangle to any other triangle by repeatedly reflecting across hyperbolic lines. This suggests that we consider the group of symmetries of the tiling generated by reflections.
+
+\begin{defn}
+    Given a hyperbolic tiling $\mathcal T$, the \emph{Weyl group} $W(\mathcal T)$ is the group of all symmetries that can be obtained by repeated reflections across lines of the tiling.
+\end{defn}
+
+\begin{rmk}
+    Note that the Weyl group might NOT contain all the symmetries of the tiling. For example, consider a tiling $\mathcal T$ by equilateral triangles with angles of $45^\circ$. Then the Weyl group is generated by reflections along sides of the triangles, but the full symmetry group also contains reflections about lines of symmetry of the triangles. In fact, for this example, we can split every equilateral triangle into six pieces by drawing in the lines of symmetry. This yields a tiling $\mathcal T'$ by triangles with angles $60^\circ$, $22.5^\circ$, and $90^\circ$. The Weyl group of this tiling is the full group of symmetries.
+\end{rmk}
+
+Now a computationally inconvenient fact about this definition is that there are infinitely many lines. Fotunately, we can generate the Weyl group with only finitely many reflections. Let's take a tiling and pick out favorite triangle in it.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{trg_246.png}
+\end{figure}
+
+Let's label the three sides $a$, $b$, and $c$. By abusing notation, we will also let $a$, $b$, and $c$ denote the reflections about these three sides. You basically showed on problem set 9 that any element of the Weyl group can be obtained by composing $a$, $b$, and $c$. What are the relations between them?
+
+\begin{thm}[Hard]
+    Consider a tiling $\mathcal T$, where one triangle has sides $a$, $b$, and $c$. Suppose that the angle between $a$ and $b$ is $\frac\pi p$, the angle between $a$ and $c$ is $\frac\pi q$, and the angle between $b$ and $c$ is $\frac\pi r$. Then the Weyl group $W(\mathcal T)$ is generated by reflections about $a$, $b$, and $c$. Furthermore, every relation is a consequence of $a^2=b^2=c^2=(ab)^p=(ac)^q=(bc)^r=1$.
+\end{thm}
+
+The triangles in the tiling are nicely labeled by Weyl group elements, because it turns out that for any triangle $T'$ there is a unique Weyl group element that maps our starting triangle to $T'$. We know how to get from a triangle to its neighbors. So we can navigate the plane, provided we know how to do computations in the Weyl group.
+
+\subsection{String rewriting}
+Every element in the Weyl group can be written as a string in the letters $a$, $b$, and $c$ which represent the generators. We can treat the relations as rewrite rules that allow us to simplify a word while still representing the same element: for example, $a^2=1$ means that we can delete $aa$ anywhere in the word, and when $p=2$ we can delete $abab$ anywhere in the word. But sometimes we may need to apply these simplifcations in reverse. For example, suppose $p=3$. Then
+\[baba\to babaababab\to ab\]
+gives a simplification of $(ba)^2$ to $ab$, but one of the intermediate steps required making the string more complex. Can we modify this system so that we can always put anything in simplest form by only applying simplifying operations? Let's first define everything.
+
+\begin{defn}
+    A \emph{string rewriting system} is a set of \emph{rewrite rules} of the form $s\to t$ where $s$ and $t$ are strings. Rewriting a string by the rule $s\to t$ means replacing a substring $s$ with $t$.
+
+    A rewriting system is \emph{terminating} if there is no string we can apply an infinite sequence of rewrites to. A rewriting system is \emph{confluent} if whenever a string $a$ can be rewritten to two strings $b$ and $c$, we can rewrite both $b$ and $c$ to the same string $d$. A rewriting system is \emph{strongly normalizing} if it is terminating and confluent.
+\end{defn}
+
+In particular, if we have a strongly normalizing rewrite system, we can always put strings in simplest form by repeatedly applying rewrites until we can't. Termination implies that we eventually finish, and confluence implies that we get the same result no matter what sequence we choose.
+
+\begin{thm}[Folklore?]
+    Given a hyperbolic tiling $\mathcal T$, there exists a strongly normalizing rewriting system for $W(\mathcal T)$. In fact, there exists such a system where every rewrite is ``downhill'' in the sense that it either decreases the length or keeps the length the same and makes the string lexicographically earlier.
+\end{thm}
+
+For example, let $\mathcal T$ be the tiling by equilateral triangles with angles of $36^\circ$. Then the Weyl group is generated by the reflections $a$, $b$, and $c$ satisfying $a^2=b^2=c^2=(ab)^5=(ac)^5=(bc)^5=1$. The rewriting system has 9 rules given by
+\begin{align*}
+    aa&\to 1\\
+    bb&\to 1\\
+    cc&\to 1\\
+    babab&\to ababa\\
+    cacac&\to acaca\\
+    cbcbc&\to bcbcb\\
+    cacabcbcb&\to acacabcbc\\
+    cbcbacaca&\to bcbcbacac\\
+    cacabcbcababa&\to acacabcbcabab
+\end{align*}
+
+These rules get pretty complicated! In fact, for many groups it will not even be possible to find such a rewriting system. So Weyl groups are quite special.
+
+\subsection{Surfing and coloring}
+So each triangle in the tiling is labeled with a string. We can move to the adjacent triangles by appending $a$, $b$, or $c$ to the end and putting it back into normal form, which correspond to reflecting about the three sides. This allows us to generate all the triangles. It also makes it easy to do so while avoiding duplication: whenever we make a simplification in the ``putting back into normal form'' part, we know that triangle will be a duplicate. So if we just want to generate a bunch of triangles, instead of doing the ``putting back into normal form'' we can just scan to see if a simplification applies and if so we toss it out.
+
+The more exciting thing we can do with labels is to color the triangles! For example, the following simple coloring algorithms in the tiling generator yield nice results:
+\begin{itemize}
+    \item Triangle/Alternate: color by length mod 2.
+    \item PolyA/Alternate: color by number of $c$s mod 2.
+    \item PolyA/$D_n$: ???
+\end{itemize}
+
+The $D_n$ colorings have the most complicated rule. I stipulated the following requirements for the $D_n$ coloring:
+\begin{itemize}
+    \item Performing a type $a$ reflection leaves the coloring invariant.
+    \item Every ``polygon'' centered at the intersection of a type $a$ line and type $b$ line is monochromatic.
+\end{itemize}
+
+Let's suppose further that in the relation $(ab)^p=(ac)^q=1$, that $p$ and $q$ are even. In terms of group theory, the first condition means that to find the color, we can pretend we have an extra relation $a=1$. Then we get the new set of relations $a=b^2=c^2=(bc)^r=1$.
+
+This defines a simpler group, the \emph{dihedral group} (where the name $D_n$ for the coloring comes from!). This is the symmetry group of a regular $r$-gon. Let $D$ be this group, then basically what we are doing is taking a quotient $W(\mathcal T)\twoheadrightarrow D$. Basically, modular arithmetic but for groups.
+
+Now let's look at the second condition. This requires that if we have a triangle, reflecting it over its $a$ or $b$ side preserves the color. Let $P$ be the subgroup of $D$ consisting of powers of $b$. Then define a \emph{left coset} of $P$ in $D$ to be a set of the form $gP:=\{gp\mid p\in P\}$ for some $g\in D$. The second condition is exactly saying that the coloring is constant on left cosets.
+
+The two alternating colorings can also be described with this formulation. If you want to learn more about this take 18.701!
 \end{document}

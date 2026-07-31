@@ -1,0 +1,70 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{setx}[2026/07/30 SETx: an improved backage for drawing SET cards]
+
+% Copyright (c) 2026 Evin Liang
+% Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+% The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+\RequirePackage{xcolor}
+\RequirePackage{tikz}
+\usetikzlibrary{calc}
+
+% shading definitions
+\newcommand{\set@empty}[1]{}
+\newcommand{\set@grill}[1]{\pgfgettransformentries\aa\ab\ba\bb\sx\sy\pgfmathsetmacro{\gap}{0.07/sqrt(\aa*\aa+\ab*\ab)}\pgfmathsetmacro{\cnt}{ceil(0.6/\gap)}\foreach \u in {-\cnt,...,\cnt} {\draw[line width=0.1mm,#1] ($(0,0.3)+\gap*(\u,0)$) -- ($(0,-0.3)+\gap*(\u,0)$);}}
+\newcommand{\set@shade}[1]{\fill[#1] (0.6,0.3) rectangle (-0.6,-0.3);}
+% color definitions
+\definecolor{set@red}{RGB}{250,50,50}
+\definecolor{set@green}{RGB}{50,170,50}
+\definecolor{set@purple}{RGB}{130,100,200}
+% shape definitions
+\newcommand{\set@lozenge}{(0.6,0) -- (0,0.3) -- (-0.6,0) -- (0,-0.3) -- cycle}
+\newcommand{\set@oval}{(0.3,0.3) -- (-0.3,0.3) arc[start angle=90,end angle=270,radius=0.3cm] -- (0.3,-0.3) arc[start angle=270,end angle=450,radius=0.3cm]}
+\newcommand{\set@squiggle}{(-0.25,0.3) .. controls (0,0.3) and (0,0.18) .. (0.2,0.18) .. controls (0.39,0.18) and (0.39,0.3) .. (0.47,0.3) .. controls (0.7,0.3) and (0.6,-0.3) .. (0.25,-0.3) .. controls (0,-0.3) and (0,-0.18) .. (-0.2,-0.18) .. controls (-0.39,-0.18) and (-0.39,-0.3) .. (-0.47,-0.3) .. controls (-0.7,-0.3) and (-0.6,0.3) .. (-0.25,0.3)}
+
+\newcommand{\set@def}[2]{\expandafter\def\csname set@#1\endcsname{#2}}
+\newcommand{\set@get}[1]{\csname set@#1\endcsname}
+\set@def{fill1}{\set@empty}
+\set@def{fill2}{\set@grill}
+\set@def{fill3}{\set@shade}
+\set@def{color1}{set@red}
+\set@def{color2}{set@green}
+\set@def{color3}{set@purple}
+\set@def{shape1}{\set@lozenge}
+\set@def{shape2}{\set@oval}
+\set@def{shape3}{\set@squiggle}
+
+% actual card rendering macros
+\newcommand{\set@mkshape}[3]{
+    \scoped{
+        \clip \set@get{shape#3};
+        \set@get{fill#1}{\set@get{color#2}}
+    }
+    \draw[line width=0.5mm,\set@get{color#2}!90!black] \set@get{shape#3};
+}
+\newcommand{\set@mkshapes}[4]{
+    \foreach \v in {1,...,#1} {
+        \pgfmathsetmacro{\dy}{0.4+0.4*#1-0.8*\v}
+        \scoped[yshift={\dy cm}]{\set@mkshape{#2}{#3}{#4}}
+    }
+}
+\newcommand{\set@card}[4]{
+    \draw[rounded corners=0.2cm] (-1,-1.5) rectangle (1,1.5);
+    \set@mkshapes{#1}{#2}{#3}{#4}
+}
+% process styles
+\pgfkeys{
+    /set/.cd,
+    size/.store in=\set@cardsize,
+    rotate/.store in=\set@cardrotate,
+    rotate/.default=90,
+    pos/.store in=\set@cardpos
+}
+\newcommand{\set@setcardtikz}[2]{
+    \pgfkeys{/set/.cd, pos={(0,0)}, size={1}, rotate={0}, #1}
+    \scoped[shift/.expanded={\set@cardpos}]{\scoped[scale={\set@cardsize},rotate={\set@cardrotate}]{\set@card#2}}
+}
+
+% public-facing command
+\newcommand{\setcard}[2][]{\ifx\pgfpictureid\undefined\begin{tikzpicture}\set@setcardtikz{#1}{#2}\end{tikzpicture}\else\set@setcardtikz{#1}{#2}\fi}

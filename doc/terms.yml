@@ -2,13 +2,14 @@ COURSES:
   HGMA:
     - geometry
     - hyperbolic
+    - hyperbolic geometry
     - axiom
     - postulate
-    - coxeter
-    - escher
-    - euclid
-    - tarski
-    - circle limit
+    - Coxeter
+    - Escher
+    - Euclid
+    - Tarski
+    - Circle Limit
     - tiling
     - triangle
     - line
@@ -25,14 +26,15 @@ COURSES:
     - circle
     - tangent
     - orthogonal
-    - poincare
-    - oincare disk
+    - Poincaré
+    - Poincaré disk
+    - Oinkaré disk
     - tiling generator
     - symmetry
     - construction
     - compass
     - straightedge
-    - power of a point
+    - Power of a Point
   RW:
     - finite difference
     - difference table
@@ -43,15 +45,15 @@ COURSES:
     - total variation
     - random walk
     - diffusion
-    - brownian motion
-    - markov chain
+    - Brownian motion
+    - Markov chain
     - transient
     - recurrent
     - harmonic function
     - generating function
     - i^2 != -1
     - pi != 3.14
-    - laplacian
+    - Laplacian
     - most beautiful equation
   VCA:
     - complex number
@@ -80,12 +82,12 @@ COURSES:
     - closure
     - integral
     - contour
-    - cauchy's theorem
-    - cauchy-riemann
+    - Cauchy's theorem
+    - Cauchy-Riemann equations
     - polar coordinates
-    - euler's formula
-    - mobius transform
-    - riemann sphere
+    - Euler's formula
+    - Möbius transform
+    - Riemann sphere
     - stereographic projection
   MINICOURSES:
     - minicourse
@@ -94,23 +96,23 @@ COURSES:
     - due east
     - impostor syndrome
     - real analysis
-    - fourier transform
+    - Fourier transform
     - minihorse
     - time complexity
-    - p = np
-    - np complete
+    - P = NP
+    - NP-complete
     - linear algebra
     - error-correcting code
     - isometry
     - orthogonal
     - robotics
-    - 14d torus
+    - 14D torus
     - invented or discovered
     - table
     - set theory
-    - zermelo-fraenkel
-    - axiom of choice
-    - vitali set
+    - Zermelo-Fraenkel
+    - Axiom of Choice
+    - Vitali set
     - measure
     - number theory
     - constructible number
@@ -122,14 +124,14 @@ COURSES:
     - trisecting an angle
     - big number
   LUNCH TALKS:
-    - riemann
+    - Riemann
     - zeta function
-    - riemann hypothesis
-    - basel problem
-    - lie group
-    - catalan number
+    - Riemann hypothesis
+    - Basel problem
+    - Lie group
+    - Catalan number
   COLLOQUIA:
-    - no rectangles
+    - no rectangles problem
     - greedy algorithm
     - random algorithm
     - finite field
@@ -138,178 +140,181 @@ COURSES:
   TERMINOLOGY:
     - theorem
     - proof
-    - big o
-    - aftsoc
-    - ftsoc
-    - wlog
-    - qed
-    - tfae
-    - wts
+    - big O
+    - AFTSOC
+    - FTSOC
+    - WLOG
+    - QED
+    - TFAE
+    - WTS
     - iff
     - trivial
     - induction
     - contradiction
     - trivial by induction
     - exercise to the reader
-    - latex
+    - LaTeX
     - all horses are the same color
-    - fields medal
+    - Fields Medal
 PEOPLE:
+  RAMPY:
+    - Rampy
   PROFS:
-    - henry cohn
-    - michael king
-    - li-mei lim
+    - Henry Cohn
+    - Michael King
+    - Li-Mei Lim
   COUNSELORS:
-    - henry not cohn
-    - mik
-    - lexi
-    - luna
-    - victor
-    - evin
+    - Henry (not Cohn)
+    - Mik
+    - Lexi
+    - Luna
+    - Victor
+    - Evin
   STUDENTS:
-    - amber
-    - amy
-    - andreas
-    - anna
-    - aryan
-    - jerry
-    - brianna
-    - bridget
-    - eliza
-    - gabe
-    - jiya
-    - kalan
-    - kenna
-    - kunal
-    - lucas
-    - lukas
-    - michelle
-    - rivven
-    - ryan
-    - sarah
-    - sneha
-    - sofia
-    - summer
-    - theo
+    - Amber
+    - Amy
+    - Andreas
+    - Anna
+    - Aryan
+    - Brianna
+    - Bridget
+    - Eliza
+    - Gabe
+    - Jerry
+    - Jiya
+    - Kalan
+    - Kenna
+    - Kunal
+    - Lucas
+    - Lukas
+    - Michelle
+    - Rivven
+    - Ryan
+    - Sarah
+    - Sneha
+    - Sofia
+    - Summer
+    - Theo
   GUESTS:
-    - interphase
-    - rsi
-    - michelle's friend from ms
-    - fabio
-    - yufei
-    - larry guth
-    - john urschel
-    - ricky magner
-    - shiqiao
-    - guy from iowa
-    - michael luo
-    - kenta
-    - paige
-    - vijay
+    - Interphase
+    - RSI
+    - Michelle's friend from HS
+    - Fabio
+    - Yufei
+    - Larry Guth
+    - John Urschel
+    - Ricky Magner
+    - Shiqiao
+    - Guy From Iowa
+    - Michael Luo
+    - Kenta
+    - Paige
+    - Vijay
 CULTURE:
   SAYINGS:
     - if you're sleeping, you're behind
-    - what would kunal do
+    - what would Kunal do
+    - WWKD
     - that's not ridiculous
-    - gmi
-    - ngmi
+    - GMI
+    - NGMI
     - lowkey tuff
-    - i guess bro
+    - I guess bro
     - cunkel funkel gunkel hunkel
     - slop slop slop sahur
-    - ai slop
+    - AI slop
     - six seven
     - larp
     - demerits
     - a monad is a monoid in the category of endofunctors
-    - i'm a chud i'm a chud i'm a fat little chud
+    - I'm a chud I'm a chud I'm a fat little chud
     - slime out
     - performative male
     - 6'3" feminist
-    - worse/better than epstein
+    - worse/better than Epstein
     - erase forcefully
     - chicken tikka masala
     - bro is
-    - henry is attracted to all horses
+    - Henry is attracted to all horses
     - too far gone
     - many such cases
   EMOJI:
-    - victor smolder
-    - rampy
-    - kalan pog
-    - aryan bruh
-    - crabby lexi
+    - victor_smolder
+    - rampyportrait
+    - kalan_pog
+    - aryan_bruh
+    - crabby_lexi
   THINGS:
     - sleep schedule
     - frog hat
     - banana
-    - hagoromo
+    - Hagoromo
     - button
-    - techcash
+    - TechCash
     - iced tea spill
-    - high noon
-    - cambridge massacre
+    - High Noon
+    - Cambridge Massacre
     - chalk experiment
-    - fourth of july
+    - Fourth of July
     - window fans
     - dry ice
     - cooler
   ACTIVITIES:
     - hotpot
     - gift card
-    - mahjong
-    - tetris
-    - set
+    - Mahjong
+    - Tetris
+    - SET
     - psetting
-    - breaking hagoromo
+    - breaking Hagoromo
     - wrestling
     - mafia
     - bang
-    - revere beach
+    - Revere Beach
     - museum
     - rock climbing
     - escape room
     - cards
     - poker
-    - bs poker
-    - catfishing
+    - BS poker
+    - catfishing.net
     - enclose.horse
-    - only connect
-    - shiqiao's birthday
+    - Only Connect
+    - Shiqiao's birthday
     - binder clips
     - crochet
     - spamming gifs
     - arm wrestling
-    - celsius pong
+    - Celsius pong
     - chairing
   PLACES:
-    - hmart
-    - brothers
-    - eastern edge
-    - toscanini's
-    - berryline
-    - honeycomb
-    - teado
-    - concord market
-    - boston
-    - cambridge
-    - harvard bridge
-    - harvard
-    - central
-    - kendall
-    - red line
-    - green line
-    - blue line
-    - park street
+    - HMart
+    - Brothers
+    - Eastern Edge
+    - Toscanini's
+    - BerryLine
+    - Honeycomb
+    - TeaDo
+    - Concord Market
+    - Boston
+    - Cambridge
+    - Harvard Bridge
+    - Harvard
+    - Central
+    - Kendall
+    - Red line
+    - Green line
+    - Blue line
+    - Park Street
     - brick oven
-    - baker lounge
-    - baker basement
-    - building 2
+    - Baker lounge
+    - Baker basement
+    - Building 2
     - 2-290
     - 2-255
     - 2-132
-    - student center
+    - Student Center
     - math lounge
-    - mit chapel
-    - the cage
-    - chairing tunnel
+    - MIT Chapel
+    - The Cage
+    - Chairing Tunnel

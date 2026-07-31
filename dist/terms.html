@@ -16,11 +16,18 @@
                 const terms = this.responseText.split("\n").filter((v) => v.trim().startsWith("-")).map((v) => v.trim().slice(2));
                 console.log(terms);
 
+                let remaining = [...terms];
                 function randomize() {
-                    term.innerText = terms[Math.floor(terms.length * Math.random())];
+                    if (remaining.length > 0) {
+                        let i = Math.floor(remaining.length * Math.random());
+                        term.innerText = remaining[i];
+                        remaining.splice(i, 1);
+                    }
+                    else {
+                        term.innerText = "No more!"
+                    }
                     term.style.fontSize = "1rem";
                     const w = 0.8 * Math.min(window.innerWidth / term.getBoundingClientRect().width, window.innerHeight / term.getBoundingClientRect().height);
-                    console.log(w);
                     term.style.fontSize = "" + w + "rem";
                 }
                 randomize();

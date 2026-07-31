@@ -1,0 +1,219 @@
+\documentclass{article}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{indentfirst}
+\usepackage[margin=1in]{geometry}
+\usepackage[shortlabels,inline]{enumitem}
+\usepackage[colorlinks=true,linkcolor=Blue]{hyperref}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{cleveref}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage{environ}
+\usepackage{setx}
+
+\setlist{parsep=0.2ex,itemsep=0.4ex}
+
+\newtheorem{thm}{Theorem}
+\newtheorem{lem}[thm]{Lemma}
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\theoremstyle{remark}
+\newtheorem*{rmk}{Remark}
+
+\newenvironment{aside}{\renewcommand{\thesection}{(\textit{\arabic{section}})}\renewcommand{\thesubsection}{(\textit{\arabic{section}.\arabic{subsection}})}}{\renewcommand{\thesection}{\arabic{section}}\renewcommand{\thesubsection}{\arabic{section}.\arabic{subsection}}}
+
+\newcommand\WarningSymbol{\makebox[1.4em][c]{\makebox[0pt][c]{\raisebox{.1em}{\small!}}\makebox[0pt][c]{\color{red!90!black}\Large$\bigtriangleup$}}}
+\newsavebox{\mpagebox}
+\newcommand{\framedblock}[1]{\savebox{\mpagebox}{#1}\par\noindent\begin{minipage}{\textwidth}\strut\vspace{\dimexpr\fboxsep+\fboxrule}\vphantom{\rule{0pt}{\dimexpr\ht\mpagebox+2\fboxsep+2\fboxrule}}\fbox{\usebox{\mpagebox}}\strut\end{minipage}\par}
+\NewEnviron{warning}{\framedblock{\raisebox{-.2em}{\WarningSymbol}\hspace{0.6em}\begin{minipage}{\dimexpr\textwidth-2em-2\fboxsep-2\fboxrule}\BODY\end{minipage}}}
+
+\pagestyle{empty}
+
+\title{\vspace{-1cm}SET theory}
+\author{Evin Liang}
+\date{July 17, 2026}
+
+\begin{document}
+\begingroup
+    \centering
+    \vspace*{0cm}
+    {\huge SET theory\par}
+    \vspace{0.5cm}
+    {\large Evin Liang\par}
+    \vspace{0.1cm}
+    {July 17, 2026\par}
+    \vspace*{0.5cm}
+\endgroup
+
+\section{SET and linear algebra}
+Most of you are familiar with the game of SET. A card in SET has four attributes (number, shading, color, shape), each of which has three values. Thus there are $3^4=81$ cards in a normal set deck. Of course, we can consider a SET-$3^n$ deck where there are $n$ attributes instead.
+
+The game is usually about identifying SETs. A SET is a set of three cards where for each attribute, the cards all have the same or all different values. For example, in \cref{f:set}, the cards all have the same value for number but are all different for shading, color, and shape. Meanwhile, \cref{f:nonset} is not a SET because of the shape attribute.
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \setcard{2133}
+        \setcard{2212}
+        \setcard{2321}
+        \caption{A SET}
+        \label{f:set}
+    \end{subfigure}
+    \hspace*{0\textwidth}
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \setcard{2222}
+        \setcard{2332}
+        \setcard{2112}
+        \caption{A non-SET}
+        \label{f:nonset}
+    \end{subfigure}
+\end{figure}
+
+Let $\mathbb F_3$ be the integers modulo 3. Then we can check by doing all the cases that three elements of $\mathbb F_3$ sum to zero if and only if they are all the same or all different. Thus if we assign every possible value for each attribute a distinct element of $\mathbb F_3$, then we can treat the deck as $\mathbb F_3^4$ (or $\mathbb F_3^n$) and three cards form a SET if and only if they sum to zero.
+
+This is very useful for studying the symmetries of SET. We define a symmetry to be a permutation of the deck such that if three cards for a SET, then they still form a SET afterwards. Equivalently, a symmetry is an invertible function $f$ on $\mathbb F_3^4$ such that whenever $x+y+z=0$, then $f(x)+f(y)+f(z)=0$. The classification of symmetries of SET ends up looking like the classification of isometries.
+
+\begin{thm}
+    The symmetries of SET are the transformations of the form $f(x)=\Lambda x+b$, where $\Lambda$ is an invertible $4\times 4$ matrix over $\mathbb F_3$ and $b$ is a vector in $\mathbb F_3^4$.
+\end{thm}
+\begin{proof}
+    We first check that any function of this form is a symmetry. Suppose $x,y,z\in\mathbb F_3^4$ form a SET, so they satisfy $x+y+z=0$. Then
+    \[f(x)+f(y)+f(z)=\Lambda x+b+\Lambda y+b+\Lambda z+b=\Lambda(x+y+z)+3b=0,\]
+    where $3b=0$ because we are working modulo 3. Thus $f(x)$, $f(y)$, and $f(z)$ form a SET.
+
+    Now we need to show that every symmetry is of this form. Let $g(x)=f(x)-f(0)$. Then we can check that $g(x)$ is a symmetry with $g(0)=0$. From $x+(-x)+0=0$ and $g(0)=0$, we get that $g(-x)=-g(x)$. From $x+y+(-x-y)=0$ and $g(-x-y)=-g(x+y)$, we get that $g(x+y)=g(x)+g(y)$. Using this, we can show that $g(\lambda x)=\lambda g(x)$ for any $\lambda\in\mathbb F_3$. Thus $g$ is a linear transformation, and $g$ must be invertible.
+\end{proof}
+
+There are a lot of such symmetries! In fact, for the standard SET deck the number of symmetries is
+\[3^4(3^4-3^0)(3^4-3^1)(3^4-3^2)(3^4-3^3)=1965150720.\]
+
+\section{Configurations of cards}
+There are some natural mathematical questions about SET. One famous question is the \emph{cap set problem}: what's the largest number of cards such that no three form a set? This is a hard problem, but we know the answers for small decks. For a SET-$3^n$ deck, we know that it's somewhere between $2.220^n$ and $2.756^n$. For the original deck of $81$ cards, the largest cap set has 20 cards. This was given as a collaborative exercise during a PRIMES STEP class.
+
+You might try to interpret the cap set problem this way: at the end of a SET game, with no more SETs left to find, what is the largest possible number of cards left? However, this is a rather different problem. The number of cards in the deck is a multiple of 3, and all the cards of the deck sum to zero. Since each SET has 3 cards and sums to zero, the remaining cards must also number a multiple of 3 and sum to zero. So we're actually interested in cap sets of a specific form.
+
+We're going to try to solve a much more general problem: classifying ``configurations'' of cards in the deck. Then we'll hope that our classification is good enough to shed light on these questions. Let's look at a small example: what are the possible configurations of four cards?
+\begin{itemize}
+    \item General case: four cards that are linearly independent.
+    \item SET+1: three cards form a SET, and another cards.
+    \item UltraSET: you may have played the UltraSET game, where instead of finding sets you find quadruples $(x,y,z,w)$ of cards where $x+y=z+w$. If you're British you might call this a Kirkby.
+\end{itemize}
+
+How do we know this is all? First, let's define what a configuration is more precisely.
+
+\begin{defn}
+    A \emph{configuration} is a tuple of cards up to symmetry. So if we can apply a symmetry of SET to get from one tuple to another, then they have the same configuration.
+\end{defn}
+
+We can describe a configuration in terms of a tuple of cards that realizes it. But there's a much better way of describing configurations, that we actually already know. In the four-card example, we defined each of the configurations in terms of the relations that hold between the cards: in the first there are none, in the second we have $x+y+z=0$, and in the last we have $x+y=z+w$. Let's formalize this!
+
+\begin{defn}
+    Let $\mathcal S=(x_1,\dots,x_m)$ be a tuple of cards. Then the \emph{code} of $\mathcal S$ is the set $\mathcal C$ of vectors $(c_1,\dots,c_m)\in\mathbb F_3^m$ satisfying the following two conditions:
+    \begin{itemize}
+        \item $c_1+\dots+c_m=0$
+        \item $c_1x_1+\dots+c_mx_m=0$
+    \end{itemize}
+\end{defn}
+
+\begin{warning}
+    The codewords of $\mathcal C$ are not SET cards! Even though they are vectors over $\mathbb F_3$ the space they inhabit is conceptually distinct. Roughly speaking, the codewords are ``dual'' to the cards.
+\end{warning}
+
+Thus for the four-card examples:
+\begin{itemize}
+    \item General case: by linear independence, the only codeword is $0000$.
+    \item SET+1: since the first three cards sum to zero, this means $1110$ is a codeword. But if $x+y+z=0$ then $2x+2y+2z=0$ as well, so $2220$ is also a codeword. So the code is $\{0000,1110,2220\}$.
+    \item UltraSET: $x+y=z+w$ means that $x+y+2z+2w=0$, so $1122$ is a codeword. Similarly, $2211$ is also a codeword. So the code is $\{0000,1122,2211\}$.
+\end{itemize}
+
+Note that the code must always be \emph{linear}: if we take the sum of two codewords, then the result must also be a codeword. In fact, this is the only condition we need!
+
+\begin{thm}
+    Taking the code associated to a tuple gives a one-to-one correspondence between configurations of $m$ cards and linear codes in $\mathbb F_3^m$. If the code has $2^k$ codewords, then it can be realized by $m$ cards in a SET deck of size $3^{m-k-1}$.
+\end{thm}
+
+For a vector in $\mathbb F_3^m$, define its \emph{Hamming weight} to be the number of nonzero coordinates. Let's look at the low weight codewords in the code.
+\begin{itemize}
+    \item There is exactly one codeword of weight 0.
+    \item There can never be a codeword of weight 1.
+    \item The only possible codewords of weight 2 have exactly one 1 and one 2. The corresponding relation is of the form $x+2y=0$, or $x=y$, so this means we have two of the same card.
+    \item The only possible codewords of weight 3 have three 1s or three 2s. This leads to a relation of the form $x+y+z=0$, so three of the cards form a SET.
+\end{itemize}
+
+This naturally leads to the ``error-correcting'' part of error-correcting codes. Suppose $\mathcal S$ is a tuple of $m$ cards with corresponding code $\mathcal C\subseteq\mathbb F_3^m$. You decide to communicate with your friend in a loud room by shouting codewords of $\mathcal C$, but since the room is loud your friend will occasionally mishear an entry. Since no two codewords every differ in exactly one place, your friend will be able to tell if a single error is made. If $\mathcal S$ consists of distinct cards, then no two codewords can differ by exactly two place either. Then your friend will be able to correct any single error. If $\mathcal S$ is additionally a cap set, then no two codewords can differ by exactly three places either. Then your friend will be able to detect when two errors have been made.
+
+\section{Fourier analysis}
+Now if we're interested in say, solving the cap set problem, then how does this correspondence with error-correcting codes make our life better? Because we can apply Fourier analysis! Given a code $\mathcal C\subseteq\mathbb F_3^m$, let's define a generating function that summarizes some information about the code.
+
+\begin{defn}
+    Let $\mathcal C\subseteq\mathbb F_3^m$ be an error-correcting code. Then its \emph{complete weight enumerator} is
+    \[W_{\mathcal C}(x,y,z)=\sum_{c\in\mathcal C}x^iy^jz^k,\]
+    where $i$, $j$, and $k$ are the numbers of $0$s, $1$s, and $2$s in the entries of $c$. The \emph{weight enumerator} is
+    \[W_{\mathcal C}(x,y)=W_{\mathcal C}(x,y,y)=\sum_{c\in\mathcal C}x^iy^{j+k}.\]
+\end{defn}
+
+Thus the coefficients of the weight enumerator tell us how many codewords have a given weight, and the complete weight enumerator gives us more detail and splits codewords by shape.
+
+Now we're ready for some Fourier analysis. We start by defining the dot product between two vectors in $\mathbb F_3^m$ by the usual formula
+\[(x_1,\dots,x_m)\cdot(y_1,\dots,y_m)=x_1y_1+\dots+x_my_m.\] 
+Then we can do a multidimensional discrete Fourier transform, which is just the same idea as a Fourier transform except multidimensional and discrete.
+
+\begin{lem}
+    Let $\mathcal C\subseteq\mathbb F_3^m$ be a linear error-correcting code. For a vector $x\in\mathbb F_3^m$, we have
+    \[\frac1{ |\mathcal C| }\sum_{c\in\mathcal C}e^{\frac{2\pi i}3 x\cdot c}=\begin{cases}
+    1&\text{if }x\cdot c=0\text{ for all }c\in\mathcal C\\
+    0&\text{otherwise}
+    \end{cases}\]
+\end{lem}
+\begin{proof}
+    If $x\cdot c=0$ for all $c\in\mathcal C$, then every term in the sum is $1$ so the result is $1$. Otherwise, pick some $c_0\in\mathcal C$ with nonzero dot product with $x$. Then since $\mathcal C$ is linear, we can partition $\mathcal C$ into triplets of the form $\{y,y+c_0,y+2c_0\}$. The contributions of the three codewords in each triplet cancel out, because one gives $1$, one gives $e^{\frac{2\pi i}3}$, and one gives $e^{\frac{4\pi i}3}$. So the sum is zero.
+\end{proof}
+
+Translating this result into the language of generating functions, we get the following amazing fact.
+
+\begin{thm}\label{t:macwilliams}
+    Let $\mathcal C\subseteq\mathbb F_3^m$ be a linear error-correcting code. Let $\mathcal C^*\subseteq\mathbb F_3^m$ consist of all vectors which have zero dot product with all codewords of $\mathcal C$. Then
+    \begin{align*}
+        W_{\mathcal C^*}(x,y,z)&=\frac{1}{ |\mathcal C| }W_{\mathcal C}(x+y+z,x+e^{\frac{2\pi i}3}y+e^{\frac{4\pi i}3}z,x+e^{\frac{4\pi i}3}y+e^{\frac{2\pi i}3}z)\\
+        W_{\mathcal C^*}(x,y)&=\frac{1}{ |\mathcal C| }W_{\mathcal C}(x+2y,x-y)
+    \end{align*}
+\end{thm}
+
+Consequently, the two expressions on the right hand side, which are \emph{a priori} a mess, actually turn out to be polynomials with nonnegative integer coefficients. Also, note that this means that the coefficients of $W_{\mathcal C^*}(x,y,z)$ and $W_{\mathcal C^*}(x,y)$ are actually linear functions in the coefficients of $W_{\mathcal C}(x,y,z)$ and $W_{\mathcal C}(x,y)$. Often, we're trying to optimize a quantity of interest that also turns out to be linear, for example the total number of codewords which is the sum of all the coefficients.
+
+So now we are trying to optimize a linear function subject to a system of linear constraints. This type of problem is called a \emph{linear program}, and it shows up a lot in applications! Note that the solution to the linear program only gives us an upper bound for our problem, but in most cases it's the best bound we know.
+
+\subsection{Lov\'asz, Delsarte, Cohn, Elkies, Viazovska}
+This sort of analysis is actually very general. Firstly, Lov\'asz used an argument like this to solve a longstanding problem in coding theory, that of finding the \emph{Shannon capacity} of the pentagon. Also, the identities of \Cref{t:macwilliams} were known for a long time.
+
+Then Delsarte made a breakthrough when he showed that if we modify the weight enumerator to the \emph{distance distribution}, then the exact same inequalities implied by \Cref{t:macwilliams} hold. This improved the best known bounds, and Delsarte showed how to extend this into more general situations with the theory of \emph{association schemes}.
+
+These were all discrete problems. But the same analysis applied to the \emph{kissing number problem}, or packing spheres around a sphere. As a consequence of this work, the kissing number is now known in 8 and 24 dimensions.
+
+Then Cohn and Elkies extended the approach to bound the density of sphere packings in $n$-dimensional space. Using Cohn and Elkies' approach, Viazovksa solved the problem of finding the densest way to pack $8$-dimensional spheres, leading to her becoming one of the few female Fields medalists. With collaborators, she then solved the problem in $24$ dimensions.
+
+\section{Afterword}
+This article is essentially all based off of the work I did as part of PRIMES STEP in the 2022--2023 school year. PRIMES STEP is a math research/enrichment program for middle schoolers in the MIT area. It's organized into two groups of 10, the senior and junior groups, that meet in class once a week with homework and research work outside of class.
+
+PRIMES STEP has a tradition that through the classes, we would find an interesting topic for research and publish a paper at the end. That 2022--2023 year was definitely my favorite. In addition to all the memories in class, it was my last year, and we somehow ended up publishing four papers. One of the RAMP counselor essay prompts was ``List one or more of the proof-based classes that you particularly enjoyed and explain what made them so satisfying.'' You might be able to guess what was my favorite class. This was the last paragraph of my essay:
+
+\begin{quote}
+    \itshape At the PRIMES orientation in 11th grade, this was still one of my deepest memories in math. After the introduction, we split into breakout rooms for new students to ask questions and old students to share advice. As for my advice, that 9th grade was sure proof to follow what's interesting and embrace all the surprises that leads to.
+\end{quote}
+
+After all that, these are the two papers where the theory here comes from:
+
+\begingroup
+\renewcommand{\section}[2]{}
+\begin{thebibliography}{9}
+    \bibitem{ECCQuads} Nikhil Byrapuram, Hwiseo Choi, Adam Ge, Selena Ge, Sylvia Zia Lee, Evin Liang, Rajarshi Mandal, Aika Oki, Daniel Wu, Michael Yang, and Tanya Khovanova. EvenQuads Game and Error-Correcting Codes. \textit{SN Computer Science}, 6(763), 2025.
+    \bibitem{LAGames} Nikhil Byrapuram, Hwiseo Choi, Adam Ge, Selena Ge, Sylvia Zia Lee, Evin Liang, Rajarshi Mandal, Aika Oki, Daniel Wu, Michael Yang, and Tanya Khovanova. Card Games Unveiled: Exploring the Underlying Linear Algebra. \textit{Recreational Mathematics Magazine}, 13(22), 2026.
+\end{thebibliography}
+\endgroup
+\end{document}
